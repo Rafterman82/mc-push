@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Custom Journey Builder Activity</title>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/emojionearea.css">
+    <link rel="stylesheet" href="css/emojione.css">
+    <!-- Salesforce Lightning Styles -->
+    <link rel="stylesheet" href="assets/styles/salesforce-lightning-design-system.css">
+    <script type="text/javascript" src="js/require.js"></script>
+    <script type="text/javascript">
+        (function() {
+            var config = {
+                baseUrl: 'js'
+            };
+            var dependencies = [
+                'customActivity'
+            ];
+            require(config, dependencies);
+        })();
+    </script>
+</head>
+<body>
+    <!--
+      _________ __                   ____ 
+     /   _____//  |_  ____ ______   /_   |
+     \_____  \\   __\/ __ \\____ \   |   |
+     /        \|  | \  ___/|  |_> >  |   |
+    /_______  /|__|  \___  >   __/   |___|
+            \/           \/|__|           
+    -->
+    <div id="step0" class="step">
+        <div id="promo_key_input">
+            <input type="hidden" id="promotion_key_hidden" />
+            <input type="hidden" id="sent" />
+        </div>
+        <div id="step0alert" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+                </svg>
+            </span>
+            <h2>There are errors on this page, please resolve them before moving to the next step.</h2>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <h2>Widget Status</h2>
+                    <div id="promotions-api" style="height:4rem">
+                        <div class="slds-notify_container slds-is-relative">
+                            <div class="slds-notify slds-notify_toast slds-theme_info" role="status">
+                                <span class="slds-assistive-text">info</span>
+                                <span class="slds-icon_container slds-icon-utility-info slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use>
+                                    </svg>
+                                </span>
+                                <div class="slds-notify__content">
+                                    <h2 class="slds-text-heading_small">Loading Promotions</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <h1><strong>Message and offer</strong></h1>
+                    <p>Select either a message, offer or both</p>
+                    <fieldset class="slds-form-element slds-form-element_stacked">
+                        <legend class="slds-form-element__legend slds-form-element__label">Select the type of promotion</legend>
+                        <div class="slds-form-element__control">
+                            <span class="slds-radio">
+                                <input type="radio" class="promotion_type" id="radio-1" value="online" name="promotionType" checked="checked" />
+                                <label class="slds-radio__label" for="radio-1">
+                                    <span class="slds-radio_faux"></span>
+                                    <span class="slds-form-element__label">PUSH Message</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio">
+                                <input type="radio" class="promotion_type" id="radio-2" value="instore" name="promotionType" />
+                                <label class="slds-radio__label" for="radio-2">
+                                    <span class="slds-radio_faux"></span>
+                                    <span class="slds-form-element__label">PUSH Offer</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio">
+                                <input type="radio" class="promotion_type" id="radio-3" value="online_instore" name="promotionType" />
+                                <label class="slds-radio__label" for="radio-3">
+                                    <span class="slds-radio_faux"></span>
+                                    <span class="slds-form-element__label">PUSH Message and Offer</span>
+                                </label>
+                            </span>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <fieldset class="slds-form-element slds-form-element_stacked">
+                        <legend class="slds-form-element__legend slds-form-element__label">Control Group Data Extension Name</legend>
+                        <div class="slds-form-element sfmc-input">
+                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Control Group</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" id="control_group">
+                                        <option value="no-code">No Control Group</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div id="update_contact_box" class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <fieldset class="slds-form-element slds-form-element_stacked">
+                        <legend class="slds-form-element__legend slds-form-element__label">Update Contact Data Extension</legend>
+                        <div class="slds-form-element sfmc-input">
+                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Update Contact</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" id="update_contacts">
+                                        <option value="no-code">No Update Contact</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+      _________ __                  ________  
+     /   _____//  |_  ____ ______   \_____  \ 
+     \_____  \\   __\/ __ \\____ \   /  ____/ 
+     /        \|  | \  ___/|  |_> > /       \ 
+    /_______  /|__|  \___  >   __/  \_______ \
+            \/           \/|__|             \/
+    -->
+
+    <div id="step1" class="step">
+        <div id="step1alert" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+                </svg>
+            </span>
+            <h2>
+                There are errors on this page, please resolve them before moving to the next step.
+            </h2>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <h2>PUSH Message Content</h2>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-1">
+                        <abbr class="slds-required" title="required">* </abbr>PUSH Message Title</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" placeholder="" required="" class="slds-input" />
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="textarea-id-01">
+                        <abbr class="slds-required" title="required">* </abbr>PUSH Message Content</label>
+                        <div class="slds-form-element__control">
+                            <textarea id="textarea-id-01" required="" class="slds-textarea" placeholder="Message Content..."></textarea>
+                        </div>
+                        <div id="chars1">300</div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="textarea-id-02">
+                        <abbr class="slds-required" title="required">* </abbr>PUSH Message Short Content</label>
+                        <div class="slds-form-element__control">
+                            <textarea id="textarea-id-02" required="" class="slds-textarea" placeholder="Shourt Message Content..."></textarea>
+                        </div>
+                        <div id="chars2">100</div>
+                    </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-2">
+                        <abbr class="slds-required" title="required">* </abbr>PUSH Message URL</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-2" placeholder="https://" required="" class="slds-input" />
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <h2>PUSH Message Setup</h2>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="select-01">Status</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                          <select class="slds-select" id="select-01">
+                            <option value="">Please select</option>
+                            <option value="A">A - ADD</option>
+                            <option value="C">C - Change/Update</option>
+                            <option value="D">D - Delete</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-1">
+                        <abbr class="slds-required" title="required">* </abbr>Target Send Data Time</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" placeholder="YYYY-MM-DD HH24:MI:SS" required="" class="slds-input" />
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--
+      _________ __                  ________  
+     /   _____//  |_  ____ ______   \_____  \ 
+     \_____  \\   __\/ __ \\____ \    _(__  < 
+     /        \|  | \  ___/|  |_> >  /       \
+    /_______  /|__|  \___  >   __/  /______  /
+            \/           \/|__|            \/ 
+    -->
+
+    <div id="step2" class="step">
+        <div id="step2alert" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+                </svg>
+            </span>
+            <h2>
+                There are errors on this page, please resolve them before moving to the next step.
+            </h2>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div id="instore_data" class="slds-col slds-size_1-of-2">
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <h2>PUSH Offer Data</h2>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="textarea-id-011">
+                        <abbr class="slds-required" title="required">* </abbr>Offer Long Description</label>
+                        <div class="slds-form-element__control">
+                            <textarea id="textarea-id-011" required="" class="slds-textarea" placeholder="Message Content..."></textarea>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="textarea-id-022">
+                        <abbr class="slds-required" title="required">* </abbr>Offer Short Description</label>
+                        <div class="slds-form-element__control">
+                            <textarea id="textarea-id-022" required="" class="slds-textarea" placeholder="Shourt Message Content..."></textarea>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-1">
+                        <abbr class="slds-required" title="required">* </abbr>Start Date Time</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" placeholder="YYYY-MM-DD HH24:MI:SS" required="" class="slds-input" />
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-1">
+                        <abbr class="slds-required" title="required">* </abbr>End Date Time</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" placeholder="YYYY-MM-DD HH24:MI:SS" required="" class="slds-input" />
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="select-01">Status</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                          <select class="slds-select" id="select-01">
+                            <option value="">Please select</option>
+                            <option value="A">A - ADD</option>
+                            <option value="C">C - Change/Update</option>
+                            <option value="D">D - Delete</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="select-01">Offer Type</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                          <select class="slds-select" id="select-01">
+                            <option value="">Please select</option>
+                            <option value="1">A - PUSH</option>
+                            <option value="2">C - JOIN</option>
+                            <option value="3">D - RREG</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-22">
+                        <abbr class="slds-required" title="required">* </abbr>Image URL</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-22" placeholder="https://" required="" class="slds-input" />
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="textarea-id-011">
+                        <abbr class="slds-required" title="required">* </abbr>More Info</label>
+                        <div class="slds-form-element__control">
+                            <textarea id="textarea-id-011" required="" class="slds-textarea" placeholder="More Info..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="instore_data" class="slds-col slds-size_1-of-2">
+                <div id="code1" class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <div class="slds-grid">
+                        <div class="slds-col">
+                                                <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-22">
+                        <abbr class="slds-required" title="required">* </abbr>Click Through URL</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-22" placeholder="https://" required="" class="slds-input" />
+                      </div>
+                    </div>
+                                        <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Channel</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" id="offer_medium_instore">
+                                    <option value="Email" selected>Online</option>
+                                    <option value="EPOS">Instore</option>
+                                    <option value="Whitemail">Online and Instore</option>
+                                    <option value="Mobilize">Informational</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label"><b>Instore Code 1</b></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" id="instore_code_1">
+                                            <option value="no-code">No Code</option>
+                                </select>
+                                        <input type="hidden" id="instore_code_1_loyalty_promotion"/>
+                                        <input type="hidden" id="instore_code_1_valid_from" />
+                                        <input type="hidden" id="instore_code_1_valid_to" />
+                            </div>
+                        </div>
+                    </div>
+                                        <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-1">
+                        <abbr class="slds-required" title="required">* </abbr>Offer Stores</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" placeholder="Offer Stores" required="" class="slds-input" />
+                      </div>
+                    </div>
+                                        <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-1">
+                        <abbr class="slds-required" title="required">* </abbr>Show Validity</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" placeholder="Show Validity" required="" class="slds-input" />
+                      </div>
+                    </div>
+                                        <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-1">
+                        <abbr class="slds-required" title="required">* </abbr>Criterea</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" placeholder="Criterea" required="" class="slds-input" />
+                      </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <!--
+      _________ __                     _____  
+     /   _____//  |_  ____ ______     /  |  | 
+     \_____  \\   __\/ __ \\____ \   /   |  |_
+     /        \|  | \  ___/|  |_> > /    ^   /
+    /_______  /|__|  \___  >   __/  \____   | 
+            \/           \/|__|          |__| 
+    -->
+
+    <div id="step3" class="step">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_3-of-4">
+                <article class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">main setup</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                        <span>Main Setup</span>
+                                    </a>
+                                </h2>
+                                <p>Your promotion is now configured, please review the information below. If you're satisfied you can send the promotion to Optima using the respective button. Once you click "Done", the widget will cache these settings and allow you to edit the promotion later on. Doing so will set the promotion refresh flag to "true".</p>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <dl class="slds-list_horizontal slds-wrap" id="summary-main-setup">
+                        </dl>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+                <article class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Control Area</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                        <span>Control Area</span>
+                                    </a>
+                                </h2>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <dl class="slds-list_horizontal slds-wrap">
+                                        <dt class="slds-item_label slds-text-color_weak">Promotion Key</dt>
+                                        <dd class="slds-item_detail" id="main_setup_key">Not currently set, please save and test.</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <ul>
+                            <li class="slds-m-vertical_xx-small"><button class="slds-button slds-button_stretch slds-button_success" id="control_action_optima">GO-LIVE</button></li>
+                            <li class="slds-m-vertical_xx-small"><button class="slds-button slds-button_stretch slds-button_brand" id="control_action_test">Save and Test</button></li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2 slds-m-vertical_xx-small">
+                <article class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">online setup</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                        <span>Online Setup</span>
+                                    </a>
+                                </h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <dl class="slds-list_horizontal slds-wrap" id="summary-online-setup">
+                        </dl>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-m-vertical_xx-small">
+                <article class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">instore setup</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                        <span>Instore Setup</span>
+                                    </a>
+                                </h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <dl class="slds-list_horizontal slds-wrap" id="summary-instore-setup">
+                        </dl>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2 slds-m-vertical_xx-small">
+                <article class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">control group sql</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                        <span>Control Group SQL</span>
+                                    </a>
+                                </h2>
+                                <p>
+                                    SELECT<br>PARTY_ID,<br>GETDATE() AS CONTACT_DATE,<br>(SELECT PromoTable.communication_cell_id_control 
+                                    FROM campaignPromotionAssociation_NEW_SIT as PromoTable WHERE PromoTable.control_group = '<span id="control_group_data_extension">SOME_DE</span>') as COMMUNICATION_CELL_ID<br>FROM<br><span id="control_group_data_extension">SOME_DE</span>
+                                </p>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <dl class="slds-list_horizontal slds-wrap" id="summary-online-setup">
+                        </dl>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-m-vertical_xx-small">
+                <article class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">association without a code</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                        <span>Association without a code</span>
+                                    </a>
+                                </h2>
+                                <p>
+                                    SELECT<br>UpdateContactDE.PARTY_ID,<br>PromoTable.MC_ID_1 as MC_UNIQUE_PROMOTION_ID,<br>GETDATE() as ASSIGNMENT_DATETIME<br>
+                                    FROM<br><span id="no_code_data_extension">SOME_DE</span> as UpdateContactDE<br>LEFT JOIN campaignPromotionAssociation_NEW_SIT as PromoTable<br>ON PromoTable.MC_ID_1 = UpdateContactDE.PROMOTION_KEY
+                                </p>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <dl class="slds-list_horizontal slds-wrap" id="summary-instore-setup">
+                        </dl>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

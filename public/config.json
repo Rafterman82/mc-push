@@ -1,0 +1,89 @@
+{
+    "workflowApiVersion": "1.1",
+    "metaData": {
+        "icon": "images/icon.png",
+        "iconSmall": "images/icon.png",
+        "category": "custom"
+    },
+    "type": "REST",
+    "lang": {
+        "en-US": {
+          "name": "SIT PUSH Message",
+          "description": "Create a PUSH Message and Offer"
+        }
+    },
+    "arguments": {
+        "execute": {
+           "inArguments":[
+        {
+          "contactKey": "{{Contact.Key}}" 
+        }                 
+      ],
+          "outArguments": [],
+          "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/execute",
+           "verb": "POST",
+            "body": "",
+            "header": "",
+            "format": "json",
+            "useJwt": true,
+            "timeout": 10000
+        }
+    },
+    "configurationArguments": {
+      "applicationExtensionKey": "78af6360-199e-49aa-b51e-2cc8cd939819",
+      "save": {
+        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/save",
+          "verb": "POST",
+        "useJwt": true
+       },
+       "publish": {
+        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/publish",
+           "verb": "POST",
+        "useJwt": true
+       },
+      "stop": {
+        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/stop",
+           "verb": "POST",
+        "useJwt": true
+      },
+      "validate": {
+        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/validate",
+        "verb": "POST",
+        "useJwt": true
+      }
+    },
+    "wizardSteps": [{
+        "label": "Messasge Type",
+        "key": "step0"
+      },
+      {
+        "label": "PUSH Message Setup",
+        "key": "step1",
+        "active": false
+      },
+      {
+        "label": "PUSH OFFER Setup",
+        "key": "step2",
+        "active": false
+      },
+      {
+        "label": "Summary",
+        "key": "step3"
+      }
+    ],
+   "userInterfaces": {
+      "configModal": {
+          "height": 200,
+          "width": 300,
+          "fullscreen": true
+      }
+   },
+    "schema": {
+        "arguments": {
+            "execute": {
+                "inArguments": [],
+                "outArguments": []
+            }
+        }
+    }
+}

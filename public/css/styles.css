@@ -1,0 +1,46 @@
+body {
+    padding: 20px;
+    margin: 0;
+}
+.step {
+    /*display: none;*/
+}
+#step0 {
+    display: block;
+}
+.slds-form-element__help {
+	display: none;
+}
+.summary-key {
+	color: #FF0000;
+}
+#summary-margin-top {
+	margin-top:20px;
+}
+#show_unique_codes {
+	display: none;
+}
+#show_global_codes {
+	display: none;
+}
+#step0alert {
+	display: none;
+}
+#step1alert {
+	display: none;
+}
+#step2alert {
+	display: none;
+}
+.slds-scoped-notification {
+	width:100%;
+}
+.slds-notify_toast, .slds-notify--toast {
+	min-width:97%!important;
+}
+#summary-instore-setup dt, #summary-online-setup dt, #summary-main-setup dt {
+	text-transform: capitalize;
+}
+.slds-item_detail, .slds-item_label {
+	width: 50%!important;
+}
