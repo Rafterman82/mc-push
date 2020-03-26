@@ -3,7 +3,7 @@ body {
     margin: 0;
 }
 .step {
-    /*display: none;*/
+    display: none;
 }
 #step0 {
     display: block;
