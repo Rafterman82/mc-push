@@ -19,7 +19,10 @@ if ( !local ) {
 	var marketingCloud = {
 	  authUrl: 									process.env.authUrl,
 	  clientId: 								process.env.clientId,
-	  clientSecret: 							process.env.clientSecret,
+	  clientSecret: 							process.env.clientSecretSOAP,
+	  clientIdSOAP: 							process.env.clientIdSOAP,
+	  clientSecretSOAP: 						process.env.clientSecret,
+	  SOAPUri: 									process.env.SOAPUri,
 	  restUrl: 									process.env.restUrl,
 	  appUrl: 									process.env.baseUrl,
 	  promotionsListDataExtension: 				process.env.promotionsListDataExtension,
@@ -38,52 +41,23 @@ if ( !local ) {
 
 // url constants
 const promotionsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsListDataExtension 		+ "/rowset?$filter=ExecutedBy%20eq%20'TpAdmin'";
-const incrementsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionIncrementExtension 		+ "/rowset";
 const globalCodesUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.globalVoucherPot 					+ "/rowset";
 const controlGroupsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 		+ "/rowset";
 const updateContactsUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 		+ "/rowset";
 const voucherPotsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.voucherPotsDataExtension 			+ "/rowset";
-const campaignAssociationUrl 	= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.insertDataExtension 				+ "/rowset";
-const descriptionUrl 			= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.promotionDescriptionDataExtension 	+ "/rowset";
-const communicationCellUrl 		= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.communicationCellDataExtension 	+ "/rowset";
-const updateIncrementsUrl 		= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.promotionIncrementExtension 	+ "/rowset";
-const templatesUrl 				= marketingCloud.restUrl + "asset/v1/content/assets/query";
 
-// json template payload
-const templatePayload = {
-    "page":
-    {
-        "page":1,
-        "pageSize":1000
-    },
-
-    "query":
-    {
-        "leftOperand":
-        {
-            "property":"name",
-            "simpleOperator":"contains",
-            "value": marketingCloud.templateFilter
-        },
-        "logicalOperator":"AND",
-        "rightOperand":
-        {
-            "property":"assetType.name",
-            "simpleOperator":"equal",
-            "value":"templatebasedemail"
-        }
-    },
-
-    "sort":
-    [
-        { "property":"name", "direction":"ASC" }
-    ],
-
-    "fields":
-    [
-        "name"
-    ]
+// configure FUEL SDK
+var FuelSoap = require('fuel-soap');
+var options = {
+	auth: {
+		clientId: marketingCloud.clientIdSOAP, 
+		clientSecret: marketingCloud.clientSecretSOAP
+	}, 
+	soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
 };
+
+var SoapClient = new FuelSoap(options);
+
 
 // Configure Express master
 app.set('port', process.env.PORT || 3000);
@@ -96,6 +70,35 @@ app.use(bodyParser.json());
 if ('development' == app.get('env')) {
 	app.use(errorhandler());
 }
+
+const soapCreateQuery = () => new Promise((resolve, reject) => {
+	var co = {
+		"PartnerKey": true,
+		"ObjectID":"8eed5631-9f42-e511-9915-8cdcd4aff7c9", // should be dynamic
+	    "CustomerKey": "10a27c92-e45e-4a8b-8266-cff3c4ad0c39", // should be dynamic, however semantic name with date would work I guess
+	    "Name": "Test SOAP Activity",
+	    "Description": "This activity was created using SOAP",
+	    "QueryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
+	    "TargetType": "DE",
+	    "DataExtensionType": {
+	    	"PartnerKey": true,
+	    	"ObjectID": true,
+	    	"CustomerKey": "AF58D55C-5CE1-4B8C-A065-F26259B1AC61",
+	    	"Name": "PROMOTION_ASSIGNMENT_SIT"
+	    },
+	    "TargetUpdateType": "Overwrite"
+	  };
+
+	SoapClient.create('QueryDefinition',co, null, function(err, response){
+	  if(err){
+	    console.log(err);
+	  }
+	  else{
+	    console.log(response.body.Results);
+	  }
+	});
+
+});
 
 const getOauth2Token = () => new Promise((resolve, reject) => {
 	axios({
@@ -673,6 +676,18 @@ app.post('/dataextension/add/', async function (req, res){
 	try {
 		const nextKey = await sendBackPayload(req.body)
 		res.send(JSON.stringify(nextKey));
+	} catch(err) {
+		console.dir(err);
+	}
+	
+});
+
+// insert data into data extension
+app.post('/automation/create/query', async function (req, res){ 
+	console.dir("Dump request body");
+	console.dir(req.body);
+	try {
+		await soapCreateQuery();
 	} catch(err) {
 		console.dir(err);
 	}
