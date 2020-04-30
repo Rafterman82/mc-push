@@ -683,7 +683,7 @@ app.post('/dataextension/add/', async function (req, res){
 });
 
 // insert data into data extension
-app.post('/automation/create/query', async function (req, res){ 
+app.get('/automation/create/query', async function (req, res){ 
 	console.dir("Dump request body");
 	console.dir(req.body);
 	try {
