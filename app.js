@@ -104,7 +104,7 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 		var SoapClient = new FuelSoap(options);
 
 		console.log("The SOAP client object is:");
-		console.log(SoalClient);
+		console.log(SoapClient);
 
 		var co = {
 			"PartnerKey": true,
