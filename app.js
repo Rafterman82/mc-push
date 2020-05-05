@@ -14,6 +14,24 @@ var urlencodedparser 	= bodyParser.urlencoded({extended:false});
 var app 				= express();
 var local       		= false;
 
+// init the fuel auth
+var FuelAuth = require('fuel-auth');
+
+// initialize the FUEL SDK against FuelSoap for new FuelSoal(options)
+var FuelSoap = require('fuel-soap');
+
+// Configure Express master
+app.set('port', process.env.PORT || 3000);
+app.use(bodyParser.raw({type: 'application/jwt'}));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Express in Development Mode
+if ('development' == app.get('env')) {
+	app.use(errorhandler());
+}
+
 // access Heroku variables
 if ( !local ) {
 	var marketingCloud = {
@@ -47,35 +65,28 @@ const updateContactsUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/k
 const voucherPotsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.voucherPotsDataExtension 			+ "/rowset";
 
 
+// Required Settings
+var myClientId     = marketingCloud.clientIdSOAP;
+var myClientSecret = marketingCloud.clientSecretSOAP;
 
-// configure FUEL SDK
-var FuelSoap = require('fuel-soap');
-var options = {
-	auth: {
-		"clientId": marketingCloud.clientIdSOAP, 
-		"clientSecret": marketingCloud.clientSecretSOAP,
-		"grant_type": "client_credentials"
-	}, 
-	soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
-};
+// Minimal Initialization
+var FuelAuthClient = new FuelAuth({
+	clientId: myClientId // required
+	, clientSecret: myClientSecret // required
+});
 
-var SoapClient = new FuelSoap(options);
+// Initialization with extra options
+var authUrl      = "https://auth.exacttargetapis.com/v1/requestToken"; //this is the default
+var accessToken  = "";
+var refreshToken = "";
 
-console.log("The SOAP Response is:");
-console.log(SoapClient);
-
-
-// Configure Express master
-app.set('port', process.env.PORT || 3000);
-app.use(bodyParser.raw({type: 'application/jwt'}));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-// Express in Development Mode
-if ('development' == app.get('env')) {
-	app.use(errorhandler());
-}
+var FuelAuthClient = new FuelAuth({
+	clientId: myClientId // required
+	, clientSecret: myClientSecret // required
+	, authUrl: authUrl
+	, accessToken: accessToken
+	, refreshToken: refreshToken
+});
 
 const soapCreateQuery = () => new Promise((resolve, reject) => {
 	var co = {
@@ -95,7 +106,7 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 	    "TargetUpdateType": "Overwrite"
 	  };
 
-	SoapClient.create('QueryDefinition',co, null, function(err, response){
+	FuelAuthClient.create('QueryDefinition',co, null, function(err, response){
 	  if(err){
 	    console.log(err);
 	  }
