@@ -46,12 +46,14 @@ const controlGroupsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/k
 const updateContactsUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 		+ "/rowset";
 const voucherPotsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.voucherPotsDataExtension 			+ "/rowset";
 
+
+
 // configure FUEL SDK
 var FuelSoap = require('fuel-soap');
 var options = {
 	auth: {
-		clientId: marketingCloud.clientIdSOAP, 
-		clientSecret: marketingCloud.clientSecretSOAP,
+		"clientId": marketingCloud.clientIdSOAP, 
+		"clientSecret": marketingCloud.clientSecretSOAP,
 		"grant_type": "client_credentials"
 	}, 
 	soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
