@@ -106,6 +106,33 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 		console.log("The SOAP client object is:");
 		console.log(SoapClient);
 
+
+		//Retrieve Data Extension ObjectId
+		var options = {
+		  filter: {
+		    leftOperand: 'CustomerKey',
+		    operator: 'equals',
+		    rightOperand: 'SIT_VoucherPotTest'
+		  }
+		};
+		SoapClient.retrieve(
+		  'DataExtension',
+		  ["ObjectID", "CustomerKey", "Name"],
+		  options,
+		  function( err, response ) {
+		    if ( err ) {
+		      // error here
+		      console.log( err);
+		      return;
+		    }
+
+		    // response.body === parsed soap response (JSON)
+		    // response.res === full response from request client
+		    console.log( response.body );
+		  }
+		);
+
+		/**
 		var co = {
 			"PartnerKey": true,
 			"ObjectID":"8eed5631-9f42-e511-9915-8cdcd4aff7c9", // should be dynamic
@@ -132,7 +159,7 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 			} else {
 				console.log(response.body.Results);
 			}
-		});
+		});**/
 	})
 
 
