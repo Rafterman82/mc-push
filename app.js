@@ -14,24 +14,6 @@ var urlencodedparser 	= bodyParser.urlencoded({extended:false});
 var app 				= express();
 var local       		= false;
 
-// init the fuel auth
-var FuelAuth = require('fuel-auth');
-
-// initialize the FUEL SDK against FuelSoap for new FuelSoal(options)
-var FuelSoap = require('fuel-soap');
-
-// Configure Express master
-app.set('port', process.env.PORT || 3000);
-app.use(bodyParser.raw({type: 'application/jwt'}));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-// Express in Development Mode
-if ('development' == app.get('env')) {
-	app.use(errorhandler());
-}
-
 // access Heroku variables
 if ( !local ) {
 	var marketingCloud = {
@@ -65,58 +47,77 @@ const updateContactsUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/k
 const voucherPotsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.voucherPotsDataExtension 			+ "/rowset";
 
 
-// Required Settings
-var myClientId     = marketingCloud.clientIdSOAP;
-var myClientSecret = marketingCloud.clientSecretSOAP;
+// Configure Express master
+app.set('port', process.env.PORT || 3000);
+app.use(bodyParser.raw({type: 'application/jwt'}));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-// Minimal Initialization
-var FuelAuthClient = new FuelAuth({
-	clientId: myClientId // required
-	, clientSecret: myClientSecret // required
-});
+// Express in Development Mode
+if ('development' == app.get('env')) {
+	app.use(errorhandler());
+}
 
-// Initialization with extra options
-var authUrl      = "https://auth.exacttargetapis.com/v1/requestToken"; //this is the default
-var accessToken  = "";
-var refreshToken = "";
+// configure FUEL SDK
+var FuelSoap = require('fuel-soap');
 
-var FuelAuthClient = new FuelAuth({
-	clientId: myClientId // required
-	, clientSecret: myClientSecret // required
-	, authUrl: authUrl
-	, accessToken: accessToken
-	, refreshToken: refreshToken
-});
 
-console.log(FuelAuthClient);
+var SoapClient = new FuelSoap(options);
 
 const soapCreateQuery = () => new Promise((resolve, reject) => {
-	var co = {
-		"PartnerKey": true,
-		"ObjectID":"8eed5631-9f42-e511-9915-8cdcd4aff7c9", // should be dynamic
-	    "CustomerKey": "10a27c92-e45e-4a8b-8266-cff3c4ad0c39", // should be dynamic, however semantic name with date would work I guess
-	    "Name": "Test SOAP Activity",
-	    "Description": "This activity was created using SOAP",
-	    "QueryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
-	    "TargetType": "DE",
-	    "DataExtensionType": {
-	    	"PartnerKey": true,
-	    	"ObjectID": true,
-	    	"CustomerKey": "AF58D55C-5CE1-4B8C-A065-F26259B1AC61",
-	    	"Name": "PROMOTION_ASSIGNMENT_SIT"
-	    },
-	    "TargetUpdateType": "Overwrite"
-	  };
 
-	FuelAuthClient.create('QueryDefinition',co, null, function(err, response){
-	  if(err){
-	    console.log(err);
-	  }
-	  else{
-	    console.log(response.body.Results);
-	  }
-	});
+	getOauth2Token().then((tokenResponse) => {
 
+		var options = {
+			auth: {
+				clientId: marketingCloud.clientIdSOAP, 
+				clientSecret: marketingCloud.clientSecretSOAP,
+				accessToken: tokenResponse
+			}, 
+			soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
+		};
+
+		var co = {
+			"PartnerKey": true,
+			"ObjectID":"8eed5631-9f42-e511-9915-8cdcd4aff7c9", // should be dynamic
+		    "CustomerKey": "10a27c92-e45e-4a8b-8266-cff3c4ad0c39", // should be dynamic, however semantic name with date would work I guess
+		    "Name": "Test SOAP Activity",
+		    "Description": "This activity was created using SOAP",
+		    "QueryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
+		    "TargetType": "DE",
+		    "DataExtensionType": {
+		    	"PartnerKey": true,
+		    	"ObjectID": true,
+		    	"CustomerKey": "AF58D55C-5CE1-4B8C-A065-F26259B1AC61",
+		    	"Name": "PROMOTION_ASSIGNMENT_SIT"
+		    },
+		    "TargetUpdateType": "Overwrite"
+		  };
+
+		SoapClient.create('QueryDefinition',co, null, function(err, response){
+		  if(err){
+		    console.log(err);
+		  }
+		  else{
+		    console.log(response.body.Results);
+		  }
+		});
+	})	
+
+
+});
+
+// insert data into data extension
+app.get('/automation/create/query', async function (req, res){ 
+	console.dir("Dump request body");
+	console.dir(req.body);
+	try {
+		await soapCreateQuery();
+	} catch(err) {
+		console.dir(err);
+	}
+	
 });
 
 const getOauth2Token = () => new Promise((resolve, reject) => {
@@ -695,18 +696,6 @@ app.post('/dataextension/add/', async function (req, res){
 	try {
 		const nextKey = await sendBackPayload(req.body)
 		res.send(JSON.stringify(nextKey));
-	} catch(err) {
-		console.dir(err);
-	}
-	
-});
-
-// insert data into data extension
-app.get('/automation/create/query', async function (req, res){ 
-	console.dir("Dump request body");
-	console.dir(req.body);
-	try {
-		await soapCreateQuery();
 	} catch(err) {
 		console.dir(err);
 	}
