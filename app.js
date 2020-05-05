@@ -87,7 +87,7 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 	getOauth2Token().then((tokenResponse) => {
 
 		console.log(tokenResponse);
-/**
+
 		var options = {
 			auth: {
 				clientId: marketingCloud.clientIdSOAP, 
@@ -123,8 +123,8 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 		  else{
 		    console.log(response.body.Results);
 		  }
-		});**/
-	});
+		});
+	})
 
 
 });
