@@ -88,6 +88,8 @@ var FuelAuthClient = new FuelAuth({
 	, refreshToken: refreshToken
 });
 
+console.log(FuelAuthClient);
+
 const soapCreateQuery = () => new Promise((resolve, reject) => {
 	var co = {
 		"PartnerKey": true,
