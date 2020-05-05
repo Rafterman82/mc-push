@@ -86,6 +86,7 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 
 	getOauth2Token().then((tokenResponse) => {
 
+		console.log("Oauth Token");
 		console.log(tokenResponse);
 
 		var options = {
@@ -97,7 +98,13 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 			soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
 		};
 
+		console.log("SOAP Options Header");
+		console.log(options);
+
 		var SoapClient = new FuelSoap(options);
+
+		console.log("The SOAP client object is:");
+		console.log(SoalClient);
 
 		var co = {
 			"PartnerKey": true,
@@ -116,13 +123,15 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 		    "TargetUpdateType": "Overwrite"
 		  };
 
+		console.log("The SOAP body is:");
+		console.log(co);
+
 		SoapClient.create('QueryDefinition',co, null, function(err, response){
-		  if(err){
-		    console.log(err);
-		  }
-		  else{
-		    console.log(response.body.Results);
-		  }
+			if ( err ) {
+				console.log(err);
+			} else {
+				console.log(response.body.Results);
+			}
 		});
 	})
 
