@@ -51,12 +51,16 @@ var FuelSoap = require('fuel-soap');
 var options = {
 	auth: {
 		clientId: marketingCloud.clientIdSOAP, 
-		clientSecret: marketingCloud.clientSecretSOAP
+		clientSecret: marketingCloud.clientSecretSOAP,
+		"grant_type": "client_credentials"
 	}, 
 	soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
 };
 
 var SoapClient = new FuelSoap(options);
+
+console.log("The SOAP Response is:");
+console.log(SoapClient);
 
 
 // Configure Express master
