@@ -62,9 +62,6 @@ if ('development' == app.get('env')) {
 // configure FUEL SDK
 var FuelSoap = require('fuel-soap');
 
-
-var SoapClient = new FuelSoap(options);
-
 const soapCreateQuery = () => new Promise((resolve, reject) => {
 
 	getOauth2Token().then((tokenResponse) => {
@@ -77,6 +74,8 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 			}, 
 			soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
 		};
+
+		var SoapClient = new FuelSoap(options);
 
 		var co = {
 			"PartnerKey": true,
