@@ -59,6 +59,26 @@ if ('development' == app.get('env')) {
 	app.use(errorhandler());
 }
 
+const getOauth2Token = () => new Promise((resolve, reject) => {
+	axios({
+		method: 'post',
+		url: marketingCloud.authUrl,
+		data:{
+			"grant_type": "client_credentials",
+			"client_id": marketingCloud.clientId,
+			"client_secret": marketingCloud.clientSecret
+		}
+	})
+	.then(function (oauthResponse) {
+		console.dir('Bearer '.concat(oauthResponse.data.access_token));
+		return resolve('Bearer '.concat(oauthResponse.data.access_token));
+	})
+	.catch(function (error) {
+		console.dir("Error getting Oauth Token");
+		return reject(error);
+	});
+});
+
 // configure FUEL SDK
 var FuelSoap = require('fuel-soap');
 
@@ -66,6 +86,8 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 
 	getOauth2Token().then((tokenResponse) => {
 
+		console.log(tokenResponse);
+/**
 		var options = {
 			auth: {
 				clientId: marketingCloud.clientIdSOAP, 
@@ -101,8 +123,8 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 		  else{
 		    console.log(response.body.Results);
 		  }
-		});
-	})	
+		});**/
+	});
 
 
 });
@@ -119,25 +141,7 @@ app.get('/automation/create/query', async function (req, res){
 	
 });
 
-const getOauth2Token = () => new Promise((resolve, reject) => {
-	axios({
-		method: 'post',
-		url: marketingCloud.authUrl,
-		data:{
-			"grant_type": "client_credentials",
-			"client_id": marketingCloud.clientId,
-			"client_secret": marketingCloud.clientSecret
-		}
-	})
-	.then(function (oauthResponse) {
-		console.dir('Bearer '.concat(oauthResponse.data.access_token));
-		return resolve('Bearer '.concat(oauthResponse.data.access_token));
-	})
-	.catch(function (error) {
-		console.dir("Error getting Oauth Token");
-		return reject(error);
-	});
-});
+
 
 const getIncrements = () => new Promise((resolve, reject) => {
 	getOauth2Token().then((tokenResponse) => {
