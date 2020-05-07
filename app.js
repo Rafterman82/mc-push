@@ -30,13 +30,7 @@ if ( !local ) {
 	  promotionsListDataExtension: 				process.env.promotionsListDataExtension,
 	  controlGroupsDataExtension: 				process.env.controlGroupsDataExtension,
 	  updateContactsDataExtension: 				process.env.updateContactsDataExtension,
-	  voucherPotsDataExtension: 				process.env.voucherPotsDataExtension,
 	  insertDataExtension: 						process.env.insertDataExtension,
-	  globalVoucherPot: 						process.env.globalVoucherPot,
-	  promotionIncrementExtension:  			process.env.promotionIncrementExtension,
-	  communicationCellDataExtension: 			process.env.communicationCellDataExtension,
-	  promotionDescriptionDataExtension: 		process.env.promotionDescriptionDataExtension,
-	  templateFilter: 							process.env.templateFilter 
 	};
 	console.dir(marketingCloud);
 }
