@@ -577,6 +577,36 @@ define([
         });
     }
 
+    function lookupPromos() {
+
+        // access offer types and build select input
+        $.ajax({
+
+            url: "/dataextension/lookup/promotions",
+            error: function() {
+                updateApiStatus("instorecodes-api", false);
+            }, 
+            success: function(result){
+
+                if ( debug ) {
+                    console.log('lookup promotions executed');
+                    console.log(result.items);               
+                }
+
+                var i;
+                for (i = 0; i < result.items.length; ++i) {
+                    if ( debug ) {
+                        console.log(result.items[i].keys);
+                    }
+                    // do something with `substr[i]
+                    $("#offer_promotion").append("<option value=" + result.items[i].values.campaign_name + ">" + result.items[i].values.campaign_name + "</option>");
+                }
+                updateApiStatus("promotions-api", true);
+            }
+
+        });
+    }
+
     function lookupUpdateContacts() {
 
         // access offer types and build select input
