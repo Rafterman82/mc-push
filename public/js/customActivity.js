@@ -180,7 +180,7 @@ define([
         });
 
         // render relevant steps based on input
-        $('.push_type').click(function() {
+        $('.promotion_type').click(function() {
 
             var pushType = $("input[name='pushType']:checked").val();
 
