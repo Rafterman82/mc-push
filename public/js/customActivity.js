@@ -50,6 +50,7 @@ define([
         connection.trigger('requestTokens');
         connection.trigger('requestEndpoints');
 
+        lookupPromos();
         lookupControlGroups();
         lookupUpdateContacts();
         loadEvents();
