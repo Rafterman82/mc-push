@@ -13,6 +13,8 @@ var activity    		= require('./routes/activity');
 var urlencodedparser 	= bodyParser.urlencoded({extended:false});
 var app 				= express();
 var local       		= false;
+const soapRequest 		= require('easy-soap-request');
+
 
 // access Heroku variables
 if ( !local ) {
@@ -86,80 +88,27 @@ const soapCreateQuery = () => new Promise((resolve, reject) => {
 
 	getOauth2Token().then((tokenResponse) => {
 
-		console.log("Oauth Token");
-		console.log(tokenResponse);
+		console.dir("Oauth Token");
+		console.dir(tokenResponse);
 
-		var options = {
-			auth: {
-				clientId: marketingCloud.clientIdSOAP, 
-				clientSecret: marketingCloud.clientSecretSOAP,
-				accessToken: tokenResponse
-			}, 
-			soapEndpoint: marketingCloud.SOAPUri // default --> https://webservice.exacttarget.com/Service.asmx
+		// example data
+		const url = 'https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php';
+		const sampleHeaders = {
+		  'user-agent': 'sampleTest',
+		  'Content-Type': 'text/xml;charset=UTF-8',
+		  'soapAction': 'https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl#LatLonListZipCode',
 		};
+		const xml = fs.readFileSync('test/zipCodeEnvelope.xml', 'utf-8');
 
-		console.log("SOAP Options Header");
-		console.log(options);
+		// usage of module
+		(async () => {
+		  const { response } = await soapRequest({ url: url, headers: sampleHeaders, xml: xml, timeout: 1000 }); // Optional timeout parameter(milliseconds)
+		  const { headers, body, statusCode } = response;
+		  console.log(headers);
+		  console.log(body);
+		  console.log(statusCode);
+		})();
 
-		var SoapClient = new FuelSoap(options);
-
-		console.log("The SOAP client object is:");
-		console.log(SoapClient);
-
-
-		//Retrieve Data Extension ObjectId
-		var options = {
-		  filter: {
-		    leftOperand: 'CustomerKey',
-		    operator: 'equals',
-		    rightOperand: 'SIT_VoucherPotTest'
-		  }
-		};
-		SoapClient.retrieve(
-		  'DataExtension',
-		  ["ObjectID", "CustomerKey", "Name"],
-		  options,
-		  function( err, response ) {
-		    if ( err ) {
-		      // error here
-		      console.log( err);
-		      return;
-		    }
-
-		    // response.body === parsed soap response (JSON)
-		    // response.res === full response from request client
-		    console.log( response.body );
-		  }
-		);
-
-		/**
-		var co = {
-			"PartnerKey": true,
-			"ObjectID":"8eed5631-9f42-e511-9915-8cdcd4aff7c9", // should be dynamic
-		    "CustomerKey": "10a27c92-e45e-4a8b-8266-cff3c4ad0c39", // should be dynamic, however semantic name with date would work I guess
-		    "Name": "Test SOAP Activity",
-		    "Description": "This activity was created using SOAP",
-		    "QueryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
-		    "TargetType": "DE",
-		    "DataExtensionType": {
-		    	"PartnerKey": true,
-		    	"ObjectID": true,
-		    	"CustomerKey": "AF58D55C-5CE1-4B8C-A065-F26259B1AC61",
-		    	"Name": "PROMOTION_ASSIGNMENT_SIT"
-		    },
-		    "TargetUpdateType": "Overwrite"
-		  };
-
-		console.log("The SOAP body is:");
-		console.log(co);
-
-		SoapClient.create('QueryDefinition',co, null, function(err, response){
-			if ( err ) {
-				console.log(err);
-			} else {
-				console.log(response.body.Results);
-			}
-		});**/
 	})
 
 
