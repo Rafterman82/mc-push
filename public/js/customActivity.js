@@ -600,7 +600,7 @@ define([
                         console.log(result.items[i].keys);
                     }
                     // do something with `substr[i]
-                    $("#offer_promotion").append("<option value=" + result.items[i].values.campaign_name + ">" + result.items[i].values.campaign_name + "</option>");
+                    $("#offer_promotion").append("<option value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
                 }
                 updateApiStatus("promotions-api", true);
             }
@@ -631,7 +631,7 @@ define([
                     // do something with substr[i]
                     $("#update_contacts").append("<option value=" + encodeURI(result.items[i].values.dataextensionname) + ">" + result.items[i].values.dataextensionname + "</option>");
                 }
-                updateApiStatus("updatecontact-api", true);
+                updateApiStatus("updatecontacts-api", true);
             }
         });
     }
