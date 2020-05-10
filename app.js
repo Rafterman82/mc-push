@@ -18,21 +18,24 @@ var local       		= false;
 // access Heroku variables
 if ( !local ) {
 	var marketingCloud = {
-	  authUrl: 									process.env.authUrl,
-	  clientId: 								process.env.clientId,
-	  clientSecret: 							process.env.clientSecretSOAP,
-	  restUrl: 									process.env.restUrl,
-	  appUrl: 									process.env.baseUrl,
-	  controlGroupsDataExtension: 				process.env.controlGroupsDataExtension,
-	  updateContactsDataExtension: 				process.env.updateContactsDataExtension,
-	  insertDataExtension: 						process.env.insertDataExtension,
+	  authUrl: 						process.env.authUrl,
+	  clientId: 					process.env.clientId,
+	  clientSecret: 				process.env.clientSecretSOAP,
+	  restUrl: 						process.env.restUrl,
+	  appUrl: 						process.env.baseUrl,
+	  controlGroupsDataExtension: 	process.env.controlGroupsDataExtension,
+	  updateContactsDataExtension: 	process.env.updateContactsDataExtension,
+	  promotionsDataExtension: 		process.env.promotionsDataExtension,
+	  insertDataExtension: 			process.env.insertDataExtension
 	};
 	console.dir(marketingCloud);
 }
 
 // url constants
-const controlGroupsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 		+ "/rowset";
-const updateContactsUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 		+ "/rowset";
+const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
+const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
+const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
+const insertUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
 
 // Configure Express master
 app.set('port', process.env.PORT || 3000);
@@ -276,6 +279,28 @@ app.get("/dataextension/lookup/updatecontacts", (req, res, next) => {
 	getOauth2Token().then((tokenResponse) => {
 
 		axios.get(updateContactsUrl, { 
+			headers: { 
+				Authorization: tokenResponse
+			}
+		})
+		.then(response => {
+			// If request is good... 
+			res.json(response.data);
+		})
+		.catch((error) => {
+		    console.dir("Error getting update contacts");
+		    console.dir(error);
+		});
+	})		
+
+});
+
+//Fetch rows from update contacts data extension
+app.get("/dataextension/lookup/promotions", (req, res, next) => {
+
+	getOauth2Token().then((tokenResponse) => {
+
+		axios.get(promotionsUrl, { 
 			headers: { 
 				Authorization: tokenResponse
 			}

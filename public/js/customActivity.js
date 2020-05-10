@@ -585,7 +585,7 @@ define([
 
             url: "/dataextension/lookup/promotions",
             error: function() {
-                updateApiStatus("instorecodes-api", false);
+                updateApiStatus("promotions-api", false);
             }, 
             success: function(result){
 
