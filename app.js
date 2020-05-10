@@ -20,7 +20,7 @@ if ( !local ) {
 	var marketingCloud = {
 	  authUrl: 						process.env.authUrl,
 	  clientId: 					process.env.clientId,
-	  clientSecret: 				process.env.clientSecretSOAP,
+	  clientSecret: 				process.env.clientSecret,
 	  restUrl: 						process.env.restUrl,
 	  appUrl: 						process.env.baseUrl,
 	  controlGroupsDataExtension: 	process.env.controlGroupsDataExtension,
