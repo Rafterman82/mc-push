@@ -46,7 +46,7 @@
             <h2>There are errors on this page, please resolve them before moving to the next step.</h2>
         </div>
         <div class="slds-grid slds-gutters">
-            <div class="slds-col slds-size_1-of-2">
+            <div class="slds-col slds-size_1-of-3">
                 <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
                     <h2>Widget Status</h2>
                     <div id="promotions-api" style="height:4rem">
@@ -66,12 +66,10 @@
                     </div>
                 </div>
             </div>
-            <div class="slds-col slds-size_1-of-2">
+            <div class="slds-col slds-size_1-of-3">
                 <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
-                    <h1><strong>Message and offer</strong></h1>
-                    <p>Select either a message, offer or both</p>
                     <fieldset class="slds-form-element slds-form-element_stacked">
-                        <legend class="slds-form-element__legend slds-form-element__label">Select the type of PUSH</legend>
+                        <legend class="slds-form-element__legend slds-form-element__label">PUSH Message Type</legend>
                         <div class="slds-form-element__control">
                             <span class="slds-radio">
                                 <input type="radio" class="promotion_type" id="radio-1" value="message" name="pushType" checked="checked" />
@@ -107,9 +105,9 @@
                 </div>
                 <div id="update_contact_box" class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
                     <fieldset class="slds-form-element slds-form-element_stacked">
-                        <legend class="slds-form-element__legend slds-form-element__label">Update Contact Data Extension</legend>
+                        <legend class="slds-form-element__legend slds-form-element__label">Update Contact Data Extension Name</legend>
                         <div class="slds-form-element sfmc-input">
-                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Update Contact</label>
+                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01"><abbr class="slds-required" title="required">* </abbr>Update Contact</label>
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                     <select class="slds-select" id="update_contacts">
@@ -120,7 +118,13 @@
                         </div>
                     </fieldset>
                 </div>
-                                    <div class="slds-grid slds-gutters">
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <fieldset class="slds-form-element slds-form-element_stacked">
+                        <legend class="slds-form-element__legend slds-form-element__label">Automation Setup</legend>
+                    </fieldset>
+                    <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-form-element">
                               <label class="slds-form-element__label" for="text-input-id-1">
@@ -132,7 +136,7 @@
                         </div>
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-form-element">
-                              <label class="slds-form-element__label" for="select-01">Automation Run Time</label>
+                              <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>Automation Run Time</label>
                               <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                   <select class="slds-select" id="automation_run_time">
@@ -160,6 +164,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-1">
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="automation_reoccuring" />
+                                        <label class="slds-checkbox__label" for="automation_reoccuring">
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label">Reoccuring Campaign?</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -207,7 +227,7 @@
                         <label class="slds-form-element__label" for="textarea-id-02">
                         <abbr class="slds-required" title="required">* </abbr>PUSH Message Short Content</label>
                         <div class="slds-form-element__control">
-                            <textarea id="message_short_content" required="" class="slds-textarea" placeholder="Shourt Message Content..."></textarea>
+                            <textarea id="message_short_content" required="" class="slds-textarea" placeholder="Short Message Content..."></textarea>
                         </div>
                         <div id="chars2">100</div>
                     </div>
@@ -293,7 +313,7 @@
             </h2>
         </div>
         <div class="slds-grid slds-gutters">
-            <div id="instore_data" class="slds-col slds-size_1-of-2">
+            <div class="slds-col slds-size_1-of-2">
                 <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
                     <h2>PUSH Offer Data</h2>
                     <div class="slds-form-element">
@@ -310,6 +330,37 @@
                             <textarea id="offer_short_content" required="" class="slds-textarea" placeholder="Short Message Content..."></textarea>
                         </div>
                     </div>
+
+                
+                                                <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-22"><abbr class="slds-required" title="required">* </abbr>Click Through URL</label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" id="offer_click_through_url" placeholder="https://" required="" class="slds-input" />
+                                </div>
+                            </div>
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="text-input-id-22">
+                        <abbr class="slds-required" title="required">* </abbr>Image URL</label>
+                      <div class="slds-form-element__control">
+                        <input type="text" id="offer_image_url" placeholder="https://" required="" class="slds-input" />
+                      </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="textarea-id-011">
+                        <abbr class="slds-required" title="required">* </abbr>More Info</label>
+                        <div class="slds-form-element__control">
+                            <textarea id="offer_more_info" required="" class="slds-textarea" placeholder="More Info..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <h2>PUSH Offer Setup</h2>
+                    <div class="slds-grid">
+                        <div class="slds-col">
+
                     <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-form-element">
@@ -391,54 +442,20 @@
                         </div>
                     </div>
                 </div>
-                    <div class="slds-form-element">
-                      <label class="slds-form-element__label" for="select-01">Offer Type</label>
-                      <div class="slds-form-element__control">
-                        <div class="slds-select_container">
-                          <select class="slds-select" id="offer_type">
-                            <option value="">Please select</option>
-                            <option value="1">A - PUSH</option>
-                            <option value="2">C - JOIN</option>
-                            <option value="3">D - RREG</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="slds-form-element">
-                      <label class="slds-form-element__label" for="text-input-id-22">
-                        <abbr class="slds-required" title="required">* </abbr>Image URL</label>
-                      <div class="slds-form-element__control">
-                        <input type="text" id="offer_image_url" placeholder="https://" required="" class="slds-input" />
-                      </div>
-                    </div>
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label" for="textarea-id-011">
-                        <abbr class="slds-required" title="required">* </abbr>More Info</label>
-                        <div class="slds-form-element__control">
-                            <textarea id="offer_more_info" required="" class="slds-textarea" placeholder="More Info..."></textarea>
-                        </div>
-                    </div>
-                </div>
             </div>
-            <div id="instore_data" class="slds-col slds-size_1-of-2">
-                <div id="code1" class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+
                     <div class="slds-grid">
                         <div class="slds-col">
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label" for="text-input-id-22"><abbr class="slds-required" title="required">* </abbr>Click Through URL</label>
-                                <div class="slds-form-element__control">
-                                    <input type="text" id="offer_click_through_url" placeholder="https://" required="" class="slds-input" />
-                                </div>
-                            </div>
+ 
                             <div class="slds-form-element sfmc-input">
                                 <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Channel</label>
                                 <div class="slds-form-element__control">
                                     <div class="slds-select_container">
                                         <select class="slds-select" id="offer_channel">
-                                            <option value="Email" selected>Online</option>
-                                            <option value="EPOS">Instore</option>
-                                            <option value="Whitemail">Online and Instore</option>
-                                            <option value="Mobilize">Informational</option>
+                                            <option value="0" selected>0 - Online</option>
+                                            <option value="1">1 - Instore</option>
+                                            <option value="2">2 - Online and Instore</option>
+                                            <option value="3">3 - Informational</option>
                                         </select>
                                     </div>
                                 </div>
@@ -539,7 +556,8 @@
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
                         <ul>
-                            <li class="slds-m-vertical_xx-small"><button class="slds-button slds-button_stretch slds-button_success" id="control_action_optima">Save</button></li>
+                            <li class="slds-m-vertical_xx-small"><button class="slds-button slds-button_stretch slds-button_success" id="control_action_save">Save</button></li>
+                            <li class="slds-m-vertical_xx-small"><button class="slds-button slds-button_stretch slds-button_success" id="control_action_create" disabled>Create Automation</button></li>
                         </ul>
                     </div>
                 </article>
@@ -648,9 +666,10 @@
                             <div class="slds-media__body">
                                 <h2 class="slds-card__header-title">
                                     <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
-                                        <span>Association Users</span>
+                                        <span>Association SQL</span>
                                     </a>
                                 </h2>
+                                <p>
                                 <p>
                                     SELECT<br>UpdateContactDE.PARTY_ID,<br>PromoTable.MC_ID_1 as MC_UNIQUE_PROMOTION_ID,<br>GETDATE() as ASSIGNMENT_DATETIME<br>
                                     FROM<br><span id="no_code_data_extension">SOME_DE</span> as UpdateContactDE<br>LEFT JOIN campaignPromotionAssociation_NEW_SIT as PromoTable<br>ON PromoTable.MC_ID_1 = UpdateContactDE.PROMOTION_KEY
