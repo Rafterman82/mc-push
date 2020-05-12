@@ -1082,7 +1082,7 @@ define([
 
     function updateSummaryPage(summaryPayload) {
 
-        $("#summary-main-setup, #summary-online-setup, #summary-instore-setup").empty();
+        $("#summary-main-setup, #summary-message-setup, #summary-offer-setup").empty();
 
         if ( debug ) {
             console.log("Build Payload for summary update it")
@@ -1099,10 +1099,10 @@ define([
 
                     if ( summaryPayload[z].key == "pushType" ) {
                         var summaryPromotionType = summaryPayload[z].value;
-                        if ( summaryPromotionType == "online") {
-                            $("#summary-instore-setup").append('<p>No codes setup.</p>');
-                        } else if ( summaryPromotionType == "instore" || summaryPromotionType == "nocode" ) {
-                            $("#summary-online-setup").append('<p>No codes setup.</p>');
+                        if ( summaryPromotionType == "message") {
+                            $("#summary-offer-setup").append('<p>No offer setup.</p>');
+                        } else if ( summaryPromotionType == "offer" ) {
+                            $("#summary-message-setup").append('<p>No message setup.</p>');
                         }
                     }
 
@@ -1111,24 +1111,25 @@ define([
 
                 } else if ( summaryPayload[z].step == 2 ) {
 
-                    if ( summaryPromotionType == "online" || summaryPromotionType == "online_instore" ) {
+                    if ( summaryPromotionType == "message" ) {
 
-                        $("#summary-online-setup").append('<dt class="slds-item_label slds-text-color_weak" title="'+summaryPayload[z].key+'"><b>'+cleanUpKeyText(summaryPayload[z].key)+'</b></dt>');
-                        $("#summary-online-setup").append('<dd class="slds-item_detail" title="Description for '+summaryPayload[z].value+'">'+summaryPayload[z].value+'</dd>');
+                        $("#summary-message-setup").append('<dt class="slds-item_label slds-text-color_weak" title="'+summaryPayload[z].key+'"><b>'+cleanUpKeyText(summaryPayload[z].key)+'</b></dt>');
+                        $("#summary-message-setup").append('<dd class="slds-item_detail" title="Description for '+summaryPayload[z].value+'">'+summaryPayload[z].value+'</dd>');
 
                     }              
 
                 } else if ( summaryPayload[z].step == 3 ) {
 
-                    if ( summaryPromotionType == "instore" || summaryPromotionType == "online_instore" || summaryPromotionType == "nocode" ) {
+                    if ( summaryPromotionType == "offer" ) {
 
-                        $("#summary-instore-setup").append('<dt class="slds-item_label slds-text-color_weak" title="'+summaryPayload[z].key+'"><b>'+cleanUpKeyText(summaryPayload[z].key)+'</b></dt>');
-                        $("#summary-instore-setup").append('<dd class="slds-item_detail" title="Description for '+summaryPayload[z].value+'">'+summaryPayload[z].value+'</dd>');
+                        $("#summary-offer-setup").append('<dt class="slds-item_label slds-text-color_weak" title="'+summaryPayload[z].key+'"><b>'+cleanUpKeyText(summaryPayload[z].key)+'</b></dt>');
+                        $("#summary-offer-setup").append('<dd class="slds-item_detail" title="Description for '+summaryPayload[z].value+'">'+summaryPayload[z].value+'</dd>');
                     
                     }     
                 }
             }
-        }  
+        } 
+        
     }
 
     function cleanUpKeyText(keyString) {

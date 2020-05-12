@@ -44,3 +44,6 @@ body {
 .slds-item_detail, .slds-item_label {
 	width: 50%!important;
 }
+#step3alert {
+	margin-bottom: 10px;
+}
