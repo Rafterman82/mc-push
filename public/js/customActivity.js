@@ -1107,6 +1107,14 @@ define([
                         } else if ( summaryPromotionType == "offer" ) {
                             $("#summary-message-setup").append('<p>No message setup.</p>');
                         }
+                    } else if ( summaryPayload[z].key == "control_group") {
+
+                        $("#control_group_data_extension").text(summaryPayload[z].value);
+
+                    } else if ( summaryPayload[z].key == "update_contacts" ) {
+
+                        $("#update_contact_data_extension").text(summaryPayload[z].value);
+
                     }
 
                     $("#summary-main-setup").append('<dt class="slds-item_label slds-text-color_weak" title="'+summaryPayload[z].key+'"><b>'+cleanUpKeyText(summaryPayload[z].key)+'</b></dt>');
@@ -1152,7 +1160,6 @@ define([
         if (debug) {
             console.log("Build Payload is:");
             console.log(JSON.stringify(buildPayload));
-            console.log(buildPayload.promotion_key);
         }
 
         var argPromotionKey;
@@ -1160,7 +1167,7 @@ define([
         for ( var w = 0; w < buildPayload.length; w++ ) {
             console.log("inside build payload loop");
             console.log(buildPayload[w]);
-            if ( buildPayload[w].key == "promotion_key_hidden") {
+            if ( buildPayload[w].key == "message_key_hidden") {
                 argPromotionKey = buildPayload[w].value;
             }
         }
@@ -1172,12 +1179,13 @@ define([
         // Journey Builder sends an initial payload with defaults
         // set by this activity's config.json file.  Any property
         // may be overridden as desired.
-        payload.name = $("#campaign_name").val();
+        payload.name = $("#widget_name").val();
 
         payload['arguments'].execute.inArguments = [{buildPayload}];
 
         // set isConfigured to true
         if ( argPromotionKey ) {
+            // this is only true is the app returned a key
             // sent to de and configured
             payload['metaData'].isConfigured = true;
         } else {

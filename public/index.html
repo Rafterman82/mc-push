@@ -210,6 +210,17 @@
                         </div>
                     </div>
                 </div>
+                <div id="update_contact_box" class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <fieldset class="slds-form-element slds-form-element_stacked">
+                        <legend class="slds-form-element__legend slds-form-element__label">Journey Builder Widget Name</legend>
+                        <div class="slds-form-element sfmc-input">
+                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01"><abbr class="slds-required" title="required">* </abbr>Widget Name</label>
+                            <div class="slds-form-element__control">
+                                <input type="text" id="widget_name" placeholder="Name" required="" class="slds-input" />
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
         </div>
     </div>
@@ -675,13 +686,13 @@
                                 </h2>
                                 <p>
                                     SELECT<br>PARTY_ID,<br>GETDATE() AS CONTACT_DATE,<br>(SELECT PromoTable.communication_cell_id_control 
-                                    FROM campaignPromotionAssociation_NEW_SIT as PromoTable WHERE PromoTable.control_group = '<span id="control_group_data_extension">SOME_DE</span>') as COMMUNICATION_CELL_ID<br>FROM<br><span id="control_group_data_extension">SOME_DE</span>
+                                    FROM campaignPromotionAssociation_NEW_SIT as PromoTable WHERE PromoTable.control_group = '<span id="control_group_data_extension">SOME_DE</span>') as COMMUNICATION_CELL_ID<br>FROM<br><span id="control_group_data_extension"></span>
                                 </p>
                             </div>
                         </header>
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
-                        <dl class="slds-list_horizontal slds-wrap" id="summary-online-setup">
+                        <dl class="slds-list_horizontal slds-wrap" id="summary-message-setup">
                         </dl>
                     </div>
                 </article>
@@ -707,13 +718,13 @@
                                 <p>
                                 <p>
                                     SELECT<br>UpdateContactDE.PARTY_ID,<br>PromoTable.MC_ID_1 as MC_UNIQUE_PROMOTION_ID,<br>GETDATE() as ASSIGNMENT_DATETIME<br>
-                                    FROM<br><span id="no_code_data_extension">SOME_DE</span> as UpdateContactDE<br>LEFT JOIN campaignPromotionAssociation_NEW_SIT as PromoTable<br>ON PromoTable.MC_ID_1 = UpdateContactDE.PROMOTION_KEY
+                                    FROM<br><span id="update_contact_data_extension">SOME_DE</span> as UpdateContactDE<br>LEFT JOIN campaignPromotionAssociation_NEW_SIT as PromoTable<br>ON PromoTable.MC_ID_1 = UpdateContactDE.PROMOTION_KEY
                                 </p>
                             </div>
                         </header>
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
-                        <dl class="slds-list_horizontal slds-wrap" id="summary-instore-setup">
+                        <dl class="slds-list_horizontal slds-wrap" id="summary-offer-setup">
                         </dl>
                     </div>
                 </article>

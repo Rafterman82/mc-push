@@ -75,18 +75,18 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 
 		console.dir("Oauth Token");
 		console.dir(tokenResponse);
-	var communicationCellData = {
-			"not_control": {
-		    	"cell_code"					: payload["cell_code"],
-		    	"cell_name"					: payload["cell_name"],
-		        "campaign_name"				: payload["campaign_name"],
-		        "campaign_id"				: payload["campaign_id"],
-		        "campaign_code"				: payload["campaign_code"],
-		        "cell_type"					: "1",
-		        "channel"					: "2",
-		        "is_putput_flag"			: "1"				
-			}
-	};
+		var queryDefinitionPayload = {
+		    "name": "REST_API3",
+		    "key": "REST_API3",
+		    "description": "test",
+		    "queryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
+		    "targetName": "PROMOTION_ASSIGNMENT_SIT",
+		    "targetKey": "AF58D55C-5CE1-4B8C-A065-F26259B1AC61",
+		    "targetId": "c77b29df-b741-ea11-b834-b883035be801",
+		    "targetUpdateTypeId": 0,
+		    "targetUpdateTypeName": "Append",
+		    "categoryId": 21650
+		}
 	   	axios({
 			method: 'post',
 			url: targetUrl,
