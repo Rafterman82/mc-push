@@ -133,7 +133,7 @@ const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => 
 	console.dir("Current Increment");
 	console.dir(currentIncrement.increment);
 
-	var newIncrement = currentIncrement.increment + 1;
+	var newIncrement = parseInt(currentIncrement.increment) + 1;
 
 	var updatedIncrementObject = {};
 	updatedIncrementObject.increment = parseInt(newIncrement);
