@@ -130,9 +130,9 @@ const getIncrements = () => new Promise((resolve, reject) => {
 const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => {
 
 	console.dir("Current Increment");
-	console.dir(currentIncrement);
+	console.dir(currentIncrement.increment);
 
-	var newIncrement = currentIncrement + 1;
+	var newIncrement = currentIncrement.increment + 1;
 
 	var updatedIncrementObject = {};
 	updatedIncrementObject.increment = parseInt(newIncrement);
