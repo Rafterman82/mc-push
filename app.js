@@ -36,7 +36,7 @@ if ( !local ) {
 const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
 const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
 const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
-const insertUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
+const insertUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key:" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
 const incrementsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.incrementDataExtension 		+ "/rowset";
 
 // Configure Express master
