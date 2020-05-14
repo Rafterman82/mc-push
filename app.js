@@ -36,8 +36,9 @@ if ( !local ) {
 const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
 const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
 const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
-const insertUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key:" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
+const insertUrl 		= marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
 const incrementsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.incrementDataExtension 		+ "/rowset";
+const updateIncrementUrl = marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketingCloud.incrementDataExtension 			+ "/rowset";
 
 // Configure Express master
 app.set('port', process.env.PORT || 3000);
@@ -141,7 +142,7 @@ const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => 
 
 	var insertPayload = [{
         "keys": {
-            "increment_key": 1
+            "id": 1
         },
         "values": updatedIncrementObject
 	}];
@@ -151,9 +152,9 @@ const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => 
 	getOauth2Token().then((tokenResponse) => {
 	   	axios({
 			method: 'post',
-			url: targetUrl,
+			url: updateIncrementUrl,
 			headers: {'Authorization': tokenResponse},
-			data: incrementsUrl
+			data: insertPayload
 		})
 		.then(function (response) {
 			console.dir(response.data);
