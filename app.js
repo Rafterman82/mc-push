@@ -28,7 +28,9 @@ if ( !local ) {
 	  promotionsDataExtension: 		process.env.promotionsDataExtension,
 	  insertDataExtension: 			process.env.insertDataExtension,
 	  incrementDataExtension: 		process.env.incrementDataExtension,
-	  seedDataExtension: 			process.env.seedlist
+	  seedDataExtension: 			process.env.seedlist,
+	  targetKey: 					process.env.targetKey,
+	  targetId: 					process.env.targetId
 	};
 	console.dir(marketingCloud);
 }
@@ -77,19 +79,40 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 
 	console.dir("Payload for Query");
 	console.dir(payload);
-/**
+
+	var t = 0;
+
+	var promotionKey;
+	var updateContactDE;
+	var controlGroupDE;
+	var messageKeySaved;
+	var automationName;
+
+	for ( t = 0; t < payload.length; t++ ) {
+
+		if ( payload[t].key == "message_key_hidden") {
+			messageKeySaved = payload[t].value;
+		} else if ( payload[t].key == "control_group") {
+			controlGroupDE = payload[t].value;
+		} else if ( payload[t].key == "update_contacts") {
+			updateContactDE = payload[t].value;
+		} else if ( payload[t].key == "widget_name") {
+			automationName = payload[t].value;
+		}
+	}
+
 	getOauth2Token().then((tokenResponse) => {
 
 		console.dir("Oauth Token");
 		console.dir(tokenResponse);
 		var queryDefinitionPayload = {
-		    "name": "REST_API3",
-		    "key": "REST_API3",
-		    "description": "test",
+		    "name": automationName,
+		    "key": automationName,
+		    "description": automationName,
 		    "queryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
-		    "targetName": "PROMOTION_ASSIGNMENT_SIT",
-		    "targetKey": "AF58D55C-5CE1-4B8C-A065-F26259B1AC61",
-		    "targetId": "c77b29df-b741-ea11-b834-b883035be801",
+		    "targetName": "member_offer_details_sit",
+		    "targetKey": marketingCloud.targetKey,
+		    "targetId": marketingCloud.targetId,
 		    "targetUpdateTypeId": 0,
 		    "targetUpdateTypeName": "Append",
 		    "categoryId": 21650
@@ -109,8 +132,7 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 			return reject(error);
 		});
 
-	})**/
-	return "someid";
+	})
 });
 
 const getIncrements = () => new Promise((resolve, reject) => {
