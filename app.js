@@ -178,7 +178,7 @@ const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve
 
 	var insertPayload = [{
         "keys": {
-            "push_key": (parseInt(incrementData.increment) + 1)
+            "push_key": parseInt(incrementData.increment)
         },
         "values": pushPayload
 	}];
