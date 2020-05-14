@@ -169,8 +169,6 @@ const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => 
 
 const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve, reject) => {
 
-	console.dir("Target URL:");
-	console.dir(targetUrl);
 	console.dir("Payload:");
 	console.dir(pushPayload);
 	console.dir("Current Key:");
