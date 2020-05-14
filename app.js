@@ -110,7 +110,7 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 		    "key": automationName,
 		    "description": automationName,
 		    "queryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
-		    "targetName": "member_offer_details_sit",
+		    "targetName": "test_insert",
 		    "targetKey": marketingCloud.targetKey,
 		    "targetId": marketingCloud.targetId,
 		    "targetUpdateTypeId": 0,
