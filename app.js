@@ -30,7 +30,8 @@ if ( !local ) {
 	  incrementDataExtension: 		process.env.incrementDataExtension,
 	  seedDataExtension: 			process.env.seedlist,
 	  targetKey: 					process.env.targetKey,
-	  targetId: 					process.env.targetId
+	  targetId: 					process.env.targetId,
+	  automationEndpoint: 			process.env.automationEndpoint
 	};
 	console.dir(marketingCloud);
 }
@@ -42,6 +43,7 @@ const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 
 const insertUrl 		= marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
 const incrementsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.incrementDataExtension 		+ "/rowset";
 const updateIncrementUrl = marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketingCloud.incrementDataExtension 			+ "/rowset";
+const automationUrl = marketingCloud.automationEndpoint;
 
 // Configure Express master
 app.set('port', process.env.PORT || 3000);
@@ -119,9 +121,9 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 		}
 	   	axios({
 			method: 'post',
-			url: targetUrl,
+			url: automationUrl,
 			headers: {'Authorization': tokenResponse},
-			data: insertPayload
+			data: queryDefinitionPayload
 		})
 		.then(function (response) {
 			console.dir(response.data);
@@ -179,9 +181,9 @@ const addSeedQueryActivity = (payload) => new Promise((resolve, reject) => {
 		}
 	   	axios({
 			method: 'post',
-			url: targetUrl,
+			url: automationUrl,
 			headers: {'Authorization': tokenResponse},
-			data: insertPayload
+			data: queryDefinitionPayload
 		})
 		.then(function (response) {
 			console.dir(response.data);
