@@ -26,7 +26,8 @@ if ( !local ) {
 	  controlGroupsDataExtension: 	process.env.controlGroupsDataExtension,
 	  updateContactsDataExtension: 	process.env.updateContactsDataExtension,
 	  promotionsDataExtension: 		process.env.promotionsDataExtension,
-	  insertDataExtension: 			process.env.insertDataExtension
+	  insertDataExtension: 			process.env.insertDataExtension,
+	  incrementDataExtension: 		process.env.incrementDataExtension
 	};
 	console.dir(marketingCloud);
 }
@@ -36,6 +37,7 @@ const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key
 const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
 const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
 const insertUrl 		= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
+const incrementsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.incrementDataExtension 		+ "/rowset";
 
 // Configure Express master
 app.set('port', process.env.PORT || 3000);
@@ -105,18 +107,6 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 	})
 });
 
-// insert data into data extension
-app.get('/automation/create/query', async function (req, res){ 
-	console.dir("Dump request body");
-	console.dir(req.body);
-	try {
-		await addQueryActivity(req.body);
-	} catch(err) {
-		console.dir(err);
-	}
-	
-});
-
 const getIncrements = () => new Promise((resolve, reject) => {
 	getOauth2Token().then((tokenResponse) => {
 
@@ -137,47 +127,82 @@ const getIncrements = () => new Promise((resolve, reject) => {
 	})
 });
 
-const saveToDataExtension = (targetUrl, payload, key, dataType, keyName) => new Promise((resolve, reject) => {
+const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => {
+
+	console.dir("Current Increment");
+	console.dir(currentIncrement);
+
+	var newIncrement = currentIncrement + 1;
+
+	var updatedIncrementObject = {};
+	updatedIncrementObject.increment = parseInt(newIncrement);
+
+	console.dir(updatedIncrementObject);
+
+	var insertPayload = [{
+        "keys": {
+            "increment_key": 1
+        },
+        "values": updatedIncrementObject
+	}];
+		
+	console.dir(insertPayload);
+
+	getOauth2Token().then((tokenResponse) => {
+	   	axios({
+			method: 'post',
+			url: targetUrl,
+			headers: {'Authorization': tokenResponse},
+			data: incrementsUrl
+		})
+		.then(function (response) {
+			console.dir(response.data);
+			return resolve(response.data);
+		})
+		.catch(function (error) {
+			console.dir(error);
+			return reject(error);
+		});
+	})	
+	
+});
+
+const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve, reject) => {
 
 	console.dir("Target URL:");
 	console.dir(targetUrl);
 	console.dir("Payload:");
-	console.dir(payload);
-	console.dir("Key:");
-	console.dir(key);
-	console.dir("Type:");
-	console.dir(dataType);
-	console.dir("Key name:");
-	console.dir(keyName);
+	console.dir(pushPayload);
+	console.dir("Current Key:");
+	console.dir(incrementData);
 
-	if ( dataType == "cpa" ) {
 
-		var insertPayload = [{
-	        "keys": {
-	            [keyName]: (parseInt(key) + 1)
-	        },
-	        "values": payload
-    	}];
-		
-		console.dir(insertPayload);
+	var insertPayload = [{
+        "keys": {
+            "push_key": (parseInt(incrementData) + 1)
+        },
+        "values": pushPayload
+	}];
+	
+	console.dir(insertPayload);
 
-		getOauth2Token().then((tokenResponse) => {
-		   	axios({
-				method: 'post',
-				url: targetUrl,
-				headers: {'Authorization': tokenResponse},
-				data: insertPayload
-			})
-			.then(function (response) {
-				console.dir(response.data);
-				return resolve(response.data);
-			})
-			.catch(function (error) {
-				console.dir(error);
-				return reject(error);
-			});
-		})	
-	} 
+	getOauth2Token().then((tokenResponse) => {
+	   	axios({
+			method: 'post',
+			url: insertUrl,
+			headers: {'Authorization': tokenResponse},
+			data: insertPayload
+		})
+		.then(function (response) {
+			console.dir(response.data);
+			return resolve(response.data);
+		})
+		.catch(function (error) {
+			console.dir(error);
+			return reject(error);
+		});
+	})	
+	
 });
 
 const updateIncrements = (targetUrl, promotionObject, communicationCellObject, mcUniquePromotionObject, numberOfCodes) => new Promise((resolve, reject) => {
@@ -185,20 +210,8 @@ const updateIncrements = (targetUrl, promotionObject, communicationCellObject, m
 	console.dir("Target URL:");
 	console.dir(targetUrl);
 
-	console.dir("cpa Object Response:");
-	console.dir(promotionObject[0].keys.promotion_key);
-
-	console.dir("comm Object Response:");
-	console.dir(communicationCellObject[1].keys.communication_cell_id);
-
-	console.dir("pro desc Object Response:");
-	console.dir(mcUniquePromotionObject[(parseInt(numberOfCodes) - 1)].keys.mc_unique_promotion_id);
-
-	var mcInc = mcUniquePromotionObject[(parseInt(numberOfCodes) - 1)].keys.mc_unique_promotion_id;
 	var updatedIncrementObject = {};
-	updatedIncrementObject.mc_unique_promotion_id_increment = parseInt(mcInc) + 1;
-	updatedIncrementObject.communication_cell_code_id_increment = parseInt(communicationCellObject[1].keys.communication_cell_id) + 1;
-	updatedIncrementObject.promotion_key = parseInt(promotionObject[0].keys.promotion_key) + 1;
+	updatedIncrementObject.message_key = 123124; // replace this key
 
 	console.dir(updatedIncrementObject);
 
@@ -227,6 +240,67 @@ const updateIncrements = (targetUrl, promotionObject, communicationCellObject, m
 			return reject(error);
 		});
 	})	
+	
+});
+
+async function buildAndSend(payload) {
+	try {
+		const incrementData = await getIncrements();
+		const pushPayload = await buildPushPayload(payload, incrementData);
+		const pushObject = await saveToDataExtension(pushPayload, incrementData);
+		await updateIncrements(incrementData);
+		return pushPayload;
+	} catch(err) {
+		console.dir(err);
+	}
+}
+
+function buildPushPayload(payload, incrementData) {
+	var mobilePushData = {};
+	for ( var i = 0; i < payload.length; i++ ) {
+		//console.dir("Step is: " + payload[i].step + ", Key is: " + payload[i].key + ", Value is: " + payload[i].value + ", Type is: " + payload[i].type);
+		mobilePushData[payload[i].key] = payload[i].value;
+
+	}
+	console.dir("building push payload")
+	console.dir(mobilePushData);
+
+	return mobilePushData;
+}
+
+async function sendBackPayload(payload) {
+	try {
+		const getIncrementsForSendback = await getIncrements();
+		var sendBackPromotionKey = parseInt(getIncrementsForSendback.increment);
+		const fullAssociationPayload = await buildAndSend(payload);
+		return sendBackPromotionKey;
+	} catch(err) {
+		console.dir(err);
+	}
+
+}
+
+// insert data into data extension
+app.post('/dataextension/add/', async function (req, res){ 
+	console.dir("Dump request body");
+	console.dir(req.body);
+	try {
+		const returnedPayload = await sendBackPayload(req.body)
+		res.send(JSON.stringify(returnedPayload));
+	} catch(err) {
+		console.dir(err);
+	}
+});
+
+// insert data into data extension
+app.get('/automation/create/query', async function (req, res){ 
+	console.dir("Dump request body");
+	console.dir(req.body);
+	try {
+		await addQueryActivity(req.body);
+	} catch(err) {
+		console.dir(err);
+	}
 	
 });
 
@@ -317,47 +391,6 @@ app.get("/dataextension/lookup/promotions", (req, res, next) => {
 
 });
 
-
-function buildAssociationPayload(payload, incrementData, numberOfCodes) {
-	var campaignPromotionAssociationData = {};
-	for ( var i = 0; i < payload.length; i++ ) {
-		//console.dir("Step is: " + payload[i].step + ", Key is: " + payload[i].key + ", Value is: " + payload[i].value + ", Type is: " + payload[i].type);
-		
-		if ( campaignPromotionAssociationData[payload[i].key] == "email_template" ) {
-			campaignPromotionAssociationData[payload[i].key] = payload[i].value;
-		} else {
-			campaignPromotionAssociationData[payload[i].key] = decodeURIComponent(payload[i].value);
-		}
-	}
-	console.dir("building association payload")
-	console.dir(campaignPromotionAssociationData);
-
-	var mcUniqueIdForAssociation = incrementData.mc_unique_promotion_id_increment;
-	var commCellForAssociation = incrementData.communication_cell_code_id_increment;
-
-	console.dir("mc inc in desc build is:");
-	console.dir(mcUniqueIdForAssociation);
-	console.dir("comm cell inc in desc build is:");
-	console.dir(commCellForAssociation);
-	console.dir("no of codes:");
-	console.dir(numberOfCodes);
-
-	for ( var i = 1; i <= numberOfCodes; i++ ) {
-		campaignPromotionAssociationData["mc_id_" + i] = parseInt(mcUniqueIdForAssociation) + i;
-	}
-
-	campaignPromotionAssociationData["communication_cell_id"] = parseInt(commCellForAssociation) + 1;
-	campaignPromotionAssociationData["communication_cell_id_control"] = parseInt(commCellForAssociation) + 2;
-
-	return campaignPromotionAssociationData;
-}
-
-// insert data into data extension
-app.post('/dataextension/add/', async function (req, res){ 
-	console.dir("Dump request body");
-	console.dir(req.body);
-	
-});
 
 app.post('/journeybuilder/save/', activity.save );
 app.post('/journeybuilder/validate/', activity.validate );

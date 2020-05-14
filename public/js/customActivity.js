@@ -172,13 +172,8 @@ define([
             }
         });
 
-        $("#text-input-id-1").emojioneArea();
+        $("#message_content").emojioneArea();
 
-        $("#target-date-button").click(function() {
-            $("#target-date-add-open").addClass("slds-is-open");
-            $("#target-time-add-open").addClass("slds-is-open");
-
-        });
 
         // render relevant steps based on input
         $('.promotion_type').click(function() {
@@ -941,11 +936,11 @@ define([
                 success: function(data) {
                     console.log('success');
                     console.log(data);
-                    $("#promotion_key_hidden").val(data);
+                    $("#message_key_hidden").val(data);
                     $("#main_setup_key").html(data);
-                    $("#control_action_optima").html("Data has been sent");
-                    $("#control_action_test").prop('disabled', true);
-                    $("#control_action_optima").prop('disabled', true);
+                    $("#control_action_save").html("Data has been sent");
+                    $("#control_action_seed").prop('disabled', false);
+                    $("#control_action_create").prop('disabled', false);
                 }
                 , error: function(jqXHR, textStatus, err){
                     if ( debug ) {
