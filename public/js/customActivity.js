@@ -939,6 +939,7 @@ define([
                     $("#message_key_hidden").val(data);
                     $("#main_setup_key").html(data);
                     $("#control_action_save").html("Data has been sent");
+                    $("#control_action_save").prop('disabled', true);
                     $("#control_action_seed").prop('disabled', false);
                     $("#control_action_create").prop('disabled', false);
                 }
