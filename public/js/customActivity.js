@@ -235,7 +235,7 @@ define([
         $("#radio-1").click();
 
         // handler for Optima button
-        $("#control_action_optima").click(function(){
+        $("#control_action_save").click(function(){
             $("#sent").val(true);
             saveToDataExtension(buildActivityPayload());
         });
