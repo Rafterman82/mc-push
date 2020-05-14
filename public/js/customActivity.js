@@ -246,9 +246,8 @@ define([
         });
 
         // handler for Optima button
-        $("#control_action_test").click(function(){
+        $("#control_action_create").click(function(){
             createAutomation(buildActivityPayload());
-            $("#sent").val(false);
         });
 
     }
