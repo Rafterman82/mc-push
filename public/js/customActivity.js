@@ -241,8 +241,13 @@ define([
         });
 
         // handler for Optima button
+        $("#control_action_seed").click(function(){
+            createAutomationSeed(buildActivityPayload());
+        });
+
+        // handler for Optima button
         $("#control_action_test").click(function(){
-            saveToDataExtension(buildActivityPayload());
+            createAutomation(buildActivityPayload());
             $("#sent").val(false);
         });
 
@@ -955,6 +960,76 @@ define([
         }
 
     }
+
+    function createAutomationSeed(payloadToSave) {
+
+        if ( debug ) {
+            console.log("Data Object to be saved is: ");
+            console.log(payloadToSave);
+        }
+
+        try {
+            $.ajax({ 
+                url: '/automation/create/query/seed',
+                type: 'POST',
+                data: JSON.stringify(payloadToSave),
+                contentType: 'application/json',                     
+                success: function(data) {
+                    console.log('success');
+                    console.log(data);
+                    $("#seed_query_key_hidden").val(data);
+                    $("#main_setup_seed_query_id").html(data);
+                    $("#control_action_seed").html("Automation Created");
+                    $("#control_action_seed").prop('disabled', true);
+                }
+                , error: function(jqXHR, textStatus, err){
+                    if ( debug ) {
+                        console.log(err);
+                    }
+                }
+            }); 
+        } catch(e) {
+            console.log("Error saving data");
+            console.log(e);
+        }
+
+    }
+
+
+    function createAutomation(payloadToSave) {
+
+        if ( debug ) {
+            console.log("Data Object to be saved is: ");
+            console.log(payloadToSave);
+        }
+
+        try {
+            $.ajax({ 
+                url: '/automation/create/query',
+                type: 'POST',
+                data: JSON.stringify(payloadToSave),
+                contentType: 'application/json',                     
+                success: function(data) {
+                    console.log('success');
+                    console.log(data);
+                    $("#query_key_hidden").val(data);
+                    $("#main_setup_query_id").html(data);
+                    $("#control_action_create").html("Automation Created");
+                    $("#control_action_create").prop('disabled', true);
+                }
+                , error: function(jqXHR, textStatus, err){
+                    if ( debug ) {
+                        console.log(err);
+                    }
+                }
+            }); 
+        } catch(e) {
+            console.log("Error saving data");
+            console.log(e);
+        }
+
+    }
+
 
     function addPromotionKeyToArgs(saveResponse) {
         if ( debug ){

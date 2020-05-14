@@ -27,7 +27,8 @@ if ( !local ) {
 	  updateContactsDataExtension: 	process.env.updateContactsDataExtension,
 	  promotionsDataExtension: 		process.env.promotionsDataExtension,
 	  insertDataExtension: 			process.env.insertDataExtension,
-	  incrementDataExtension: 		process.env.incrementDataExtension
+	  incrementDataExtension: 		process.env.incrementDataExtension,
+	  seedDataExtension: 			process.env.seedlist
 	};
 	console.dir(marketingCloud);
 }
@@ -74,6 +75,9 @@ const getOauth2Token = () => new Promise((resolve, reject) => {
 
 const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 
+	console.dir("Payload for Query");
+	console.dir(payload);
+/**
 	getOauth2Token().then((tokenResponse) => {
 
 		console.dir("Oauth Token");
@@ -105,7 +109,8 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 			return reject(error);
 		});
 
-	})
+	})**/
+	return "someid";
 });
 
 const getIncrements = () => new Promise((resolve, reject) => {
@@ -254,11 +259,25 @@ app.post('/dataextension/add/', async function (req, res){
 });
 
 // insert data into data extension
-app.get('/automation/create/query', async function (req, res){ 
+app.post('/automation/create/query', async function (req, res){ 
 	console.dir("Dump request body");
 	console.dir(req.body);
 	try {
-		await addQueryActivity(req.body);
+		const returnedQueryId = await addQueryActivity(req.body);
+		res.send(JSON.stringify(returnedQueryId));
+	} catch(err) {
+		console.dir(err);
+	}
+	
+});
+
+// insert data into data extension
+app.post('/automation/create/query/seed', async function (req, res){ 
+	console.dir("Dump request body");
+	console.dir(req.body);
+	try {
+		const returnedSeedQueryId = await addSeedQueryActivity(req.body);
+		res.send(JSON.stringify(returnedSeedQueryId));
 	} catch(err) {
 		console.dir(err);
 	}
