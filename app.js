@@ -135,6 +135,66 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 	})
 });
 
+const addSeedQueryActivity = (payload) => new Promise((resolve, reject) => {
+
+	console.dir("Payload for Query");
+	console.dir(payload);
+
+	var t = 0;
+
+	var promotionKey;
+	var updateContactDE;
+	var controlGroupDE;
+	var messageKeySaved;
+	var automationName;
+
+	for ( t = 0; t < payload.length; t++ ) {
+
+		if ( payload[t].key == "message_key_hidden") {
+			messageKeySaved = payload[t].value;
+		} else if ( payload[t].key == "control_group") {
+			controlGroupDE = payload[t].value;
+		} else if ( payload[t].key == "update_contacts") {
+			updateContactDE = payload[t].value;
+		} else if ( payload[t].key == "widget_name") {
+			automationName = payload[t].value;
+		}
+	}
+
+	getOauth2Token().then((tokenResponse) => {
+
+		console.dir("Oauth Token");
+		console.dir(tokenResponse);
+		var queryDefinitionPayload = {
+		    "name": automationName,
+		    "key": automationName,
+		    "description": automationName,
+		    "queryText": "SELECT bucket.PARTY_ID, cpasit.MC_ID_1 as MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM NO_EMAIL_LOYALTY_TEST as bucket LEFT JOIN campaignPromotionAssociation_NEW_SIT as cpasit ON cpasit.MC_ID_1 = bucket.PROMOTION_KEY",
+		    "targetName": "test_insert",
+		    "targetKey": marketingCloud.targetKey,
+		    "targetId": marketingCloud.targetId,
+		    "targetUpdateTypeId": 0,
+		    "targetUpdateTypeName": "Append",
+		    "categoryId": 21650
+		}
+	   	axios({
+			method: 'post',
+			url: targetUrl,
+			headers: {'Authorization': tokenResponse},
+			data: insertPayload
+		})
+		.then(function (response) {
+			console.dir(response.data);
+			return resolve(response.data);
+		})
+		.catch(function (error) {
+			console.dir(error);
+			return reject(error);
+		});
+
+	})
+});
+
 const getIncrements = () => new Promise((resolve, reject) => {
 	getOauth2Token().then((tokenResponse) => {
 
