@@ -205,44 +205,6 @@ const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve
 	
 });
 
-const updateIncrements = (targetUrl, promotionObject, communicationCellObject, mcUniquePromotionObject, numberOfCodes) => new Promise((resolve, reject) => {
-
-	console.dir("Target URL:");
-	console.dir(targetUrl);
-
-	var updatedIncrementObject = {};
-	updatedIncrementObject.message_key = 123124; // replace this key
-
-	console.dir(updatedIncrementObject);
-
-	var insertPayload = [{
-        "keys": {
-            "increment_key": 1
-        },
-        "values": updatedIncrementObject
-	}];
-		
-	console.dir(insertPayload);
-
-	getOauth2Token().then((tokenResponse) => {
-	   	axios({
-			method: 'post',
-			url: targetUrl,
-			headers: {'Authorization': tokenResponse},
-			data: insertPayload
-		})
-		.then(function (response) {
-			console.dir(response.data);
-			return resolve(response.data);
-		})
-		.catch(function (error) {
-			console.dir(error);
-			return reject(error);
-		});
-	})	
-	
-});
-
 async function buildAndSend(payload) {
 	try {
 		const incrementData = await getIncrements();
