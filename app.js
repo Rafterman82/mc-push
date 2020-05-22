@@ -86,7 +86,7 @@ const getOauth2Token = () => new Promise((resolve, reject) => {
 	});
 });
 
-async function definePayloadAttributes(payload, seed) {
+function definePayloadAttributes(payload, seed) {
 	
 	var t = 0;
 	var promotionKey;
@@ -185,7 +185,7 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 	console.dir("Payload for Query");
 	console.dir(payload);
 
-	const payloadAttributes = definePayloadAttributes(payload);
+	var payloadAttributes = definePayloadAttributes(payload);
 
 	var communicationQuery;
 	var assignmentQuery;
