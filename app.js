@@ -112,7 +112,7 @@ async function definePayloadAttributes(payload, seed) {
 				automationName = payload[t].value;
 			} else if ( payload[t].key == "pushType") {
 				pushType = payload[t].value;
-			} else if ( payload[t].key == "offer_key") {
+			} else if ( payload[t].key == "offer_promotion") {
 				promotionKey = payload[t].value;
 			} else if ( payload[t].key == "automation_run_time" ) {
 				automationRunTime = payload[t].value;
