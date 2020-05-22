@@ -130,8 +130,12 @@ const definePayloadAttributes = (payload, seed) => new Promise((resolve, reject)
 		query_reoccuring: automationReoccuring
 	};
 
-	return attributes;
-
+	if (attribute) {
+		return resolve(attributes);
+	} else {
+		return reject("There was an error");
+	}
+	
 });
 const sendQuery = (query, target, name, description) => new Promise((resolve, reject) => {
 
