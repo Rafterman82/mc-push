@@ -110,7 +110,7 @@ async function definePayloadAttributes(payload, seed) {
 				updateContactDE = payload[t].value;
 			} else if ( payload[t].key == "widget_name") {
 				automationName = payload[t].value;
-			} else if ( payload[t].key == "push_type") {
+			} else if ( payload[t].key == "pushType") {
 				pushType = payload[t].value;
 			} else if ( payload[t].key == "offer_key") {
 				promotionKey = payload[t].value;
@@ -209,6 +209,7 @@ async function addQueryActivity(payload) {
 				LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa \n 
 				ON cpa.promotion_key = [` + payloadAttributes.promotion_key + `] \n 
 				WHEN cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'\n`;
+		console.dir(communicationQuery);
 
 		if ( payloadAttributes.push_type = "offer" ) {
 
@@ -232,6 +233,7 @@ async function addQueryActivity(payload) {
 				LEFT JOIN [` + marketingCloud.promotionTableName + `] as cpa \n 
 				ON cpa.promotion_key = bucket.PROMOTION_KEY \n 
 				WHEN cpa.promotionType = 'instore' OR cpa.promotionType = 'online_instore' \n`;
+				console.dir(assignmentQuery);
 
 			var memberOfferQuery = `
 				SELECT \n 
@@ -259,6 +261,7 @@ async function addQueryActivity(payload) {
 				ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n 
 				LEFT JOIN [` + marketingCloud.promotionDescriptionTable + `] AS PD \n 
 				ON PD.MC_UNIQUE_PROMOTION_ID = PT.MC_ID_6 \n`;
+				console.dir(memberOfferQuery);
 		
 		} else {
 
@@ -276,8 +279,10 @@ async function addQueryActivity(payload) {
 				ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n 
 				LEFT JOIN [` + marketingCloud.mobilePushMainTable + `] as MPT \n 
 				ON MPT.push_key = [` + payloadAttributes.key + `] \n`;
+				console.dir(messageQuery);
 		
 		}
+
 
 		/*
 
