@@ -206,7 +206,7 @@ async function addQueryActivity(payload) {
 				GETDATE() as CONTACT_DATE \n 
 				FROM \n 
 				[` + payloadAttributes.update_contact + `] as bucket \n 
-				LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa \n 
+				LEFT JOIN [` + marketingCloud.promotionTableName + `] as cpa \n 
 				ON cpa.promotion_key = [` + payloadAttributes.promotion_key + `] \n 
 				WHEN cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'\n`;
 		console.dir(communicationQuery);
@@ -283,9 +283,6 @@ async function addQueryActivity(payload) {
 		
 		}
 
-
-		/*
-
 		const communicationQueryId = await sendQuery(communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
 		
 		await logQuery(communicationQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
@@ -308,10 +305,9 @@ async function addQueryActivity(payload) {
 			returnIds["member_message_query_id"] = assignmentQueryId;
 
 		}
-		*/
+		
 
-		//return returnIds;
-		return "test";
+		return returnIds;
 
 	} catch(e) {
 
