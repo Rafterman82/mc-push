@@ -47,7 +47,7 @@ if ( !local ) {
 }
 
 // url constants
-const scheduleUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key" + marketingCloud.automationScheduleExtension + "/rowset";
+const scheduleUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" + marketingCloud.automationScheduleExtension + "/rowset";
 const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
 const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
 const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
