@@ -41,13 +41,13 @@ if ( !local ) {
 	  partyCardDetailsTable:  		process.env.partyCardDetailsTable,
 	  promotionDescriptionTable: 	process.env.promotionDescriptionTable,
 	  seedListTable: 				process.env.seedListTable,
-	  automationScheduleExtension: 				process.env.automationScheduleExtension
+	  automationScheduleExtension:  process.env.automationScheduleExtension
 	};
 	console.dir(marketingCloud);
 }
 
 // url constants
-const scheduleUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" + marketingCloud.automationScheduleExtension + "/rowset";
+const scheduleUrl = marketingCloud.restUrl + "hub/v1/dataevents/key:" + marketingCloud.automationScheduleExtension + "/rowset";
 const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
 const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
 const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
