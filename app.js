@@ -133,52 +133,15 @@ async function definePayloadAttributes(payload, seed) {
 			query_date: automationRunDate + " " + automationRunTime,
 			query_reoccuring: automationReoccuring
 		};
-
+		
+		console.dir("The attributes return is");
+		console.dir(attributes);
 
 		return attributes;
 	} catch(e) {
 		return e;
 	}
 
-
-	for ( t = 0; t < payload.length; t++ ) {
-
-		if ( payload[t].key == "message_key_hidden") {
-			messageKeySaved = payload[t].value;
-		} else if ( payload[t].key == "control_group") {
-			controlGroupDE = payload[t].value;
-		} else if ( payload[t].key == "update_contacts") {
-			updateContactDE = payload[t].value;
-		} else if ( payload[t].key == "widget_name") {
-			automationName = payload[t].value;
-		} else if ( payload[t].key == "push_type") {
-			pushType = payload[t].value;
-		} else if ( payload[t].key == "offer_key") {
-			promotionKey = payload[t].value;
-		} else if ( payload[t].key == "automation_run_time" ) {
-			automationRunTime = payload[t].value;
-		} else if ( payload[t].key == "automation_run_date" ) {
-			automationRunDate = payload[t].value;
-		} else if ( payload[t].key == "automation_reoccuring" ) {
-			automationReoccuring = payload[t].value;
-		}
-	}
-
-	var attributes = {
-		key: messageKeySaved, 
-		control_group: controlGroupDE, 
-		update_contact: updateContactDE, 
-		query_name: automationName,
-		push_type: pushType,
-		promotion_key: promotionKey,
-		query_date: automationRunDate + " " + automationRunTime,
-		query_reoccuring: automationReoccuring
-	};
-
-
-	return attributes;
-
-	
 };
 const sendQuery = (query, target, name, description) => new Promise((resolve, reject) => {
 
@@ -233,6 +196,7 @@ async function addQueryActivity(payload) {
 
 	try {
 		const payloadAttributes = await definePayloadAttributes(payload);
+		console.dir("The Payload Attributes");
 		console.dir(payloadAttributes);
 		var communicationQuery = "SELECT \n bucket.PARTY_ID, \n cpa.communication_cell_id AS COMMUNICATION_CELL_ID, \n GETDATE() as CONTACT_DATE \n FROM \n [" + payloadAttributes.update_contact + "] as bucket \n LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa \n ON cpa.promotion_key = [" + payloadAttributes.promotion_key + "] \n WHEN cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'\n";
 		if ( payloadAttributes.push_type = "offer" ) {
