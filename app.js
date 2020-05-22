@@ -34,7 +34,7 @@ if ( !local ) {
 	  automationEndpoint: 			process.env.automationEndpoint,
 	  promotionTableName: 			process.env.promotionTableName,
 	  communicationTableName: 		process.env.communicationTableName,
-	  assignmentTableName: 			process.env.assignmentTableName
+	  assignmentTableName: 			process.env.assignmentTableName,
 	  messageTableName: 			process.env.messageTableName,
 	  offerTableName: 				process.env.offerTableName,
 	  mobilePushMainTable: 			process.env.mobilePushMainTable,
