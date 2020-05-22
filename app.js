@@ -264,7 +264,7 @@ const logQuery = (queryId, type, scheduledDate) => new Promise((resolve, reject)
 
 	var queryPayload = [{
         "keys": {
-            "query_id": parseInt(queryId)
+            "query_id": queryId
         },
         "values": {
         	"reoccurring": automationType,
