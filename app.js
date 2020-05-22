@@ -40,12 +40,14 @@ if ( !local ) {
 	  mobilePushMainTable: 			process.env.mobilePushMainTable,
 	  partyCardDetailsTable:  		process.env.partyCardDetailsTable,
 	  promotionDescriptionTable: 	process.env.promotionDescriptionTable,
-	  seedListTable: 				process.env.seedListTable
+	  seedListTable: 				process.env.seedListTable,
+	  automationScheduleExtension: 				process.env.automationScheduleExtension
 	};
 	console.dir(marketingCloud);
 }
 
 // url constants
+const scheduleUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key" + marketingCloud.automationScheduleExtension + "/rowset";
 const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
 const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
 const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
@@ -275,7 +277,7 @@ const logQuery = (queryId, type, scheduledDate) => new Promise((resolve, reject)
 	getOauth2Token().then((tokenResponse) => {
 	   	axios({
 			method: 'post',
-			url: queryUrl,
+			url: scheduleUrl,
 			headers: {'Authorization': tokenResponse},
 			data: queryPayload
 		})
