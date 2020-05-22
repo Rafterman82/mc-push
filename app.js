@@ -86,8 +86,8 @@ const getOauth2Token = () => new Promise((resolve, reject) => {
 	});
 });
 
-function definePayloadAttributes(payload, seed) {
-	
+async function definePayloadAttributes(payload, seed) {
+
 	var t = 0;
 	var promotionKey;
 	var updateContactDE;
@@ -95,6 +95,51 @@ function definePayloadAttributes(payload, seed) {
 	var messageKeySaved;
 	var automationName;
 	var pushType;
+	var automationRunDate;
+	var automationRunTime;
+	var automationReoccuring;
+	
+	try {
+		for ( t = 0; t < payload.length; t++ ) {
+
+			if ( payload[t].key == "message_key_hidden") {
+				messageKeySaved = payload[t].value;
+			} else if ( payload[t].key == "control_group") {
+				controlGroupDE = payload[t].value;
+			} else if ( payload[t].key == "update_contacts") {
+				updateContactDE = payload[t].value;
+			} else if ( payload[t].key == "widget_name") {
+				automationName = payload[t].value;
+			} else if ( payload[t].key == "push_type") {
+				pushType = payload[t].value;
+			} else if ( payload[t].key == "offer_key") {
+				promotionKey = payload[t].value;
+			} else if ( payload[t].key == "automation_run_time" ) {
+				automationRunTime = payload[t].value;
+			} else if ( payload[t].key == "automation_run_date" ) {
+				automationRunDate = payload[t].value;
+			} else if ( payload[t].key == "automation_reoccuring" ) {
+				automationReoccuring = payload[t].value;
+			}
+		}
+
+		var attributes = {
+			key: messageKeySaved, 
+			control_group: controlGroupDE, 
+			update_contact: updateContactDE, 
+			query_name: automationName,
+			push_type: pushType,
+			promotion_key: promotionKey,
+			query_date: automationRunDate + " " + automationRunTime,
+			query_reoccuring: automationReoccuring
+		};
+
+
+		return attributes;
+	} catch(e) {
+		return e;
+	}
+
 
 	for ( t = 0; t < payload.length; t++ ) {
 
@@ -201,19 +246,19 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 		messageQuery = "SELECT \n 'Matalan' AS SCHEME_ID, \n _CustomObjectKey AS MOBILE_MESSAGE_ID, \n PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, \n MPT.message_content AS MESSAGE_CONTENT, \n CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, \n 'A' AS STATUS, \n MPT.message_short_content AS SHORT_MESSAGE_CONTENT \n FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE \n LEFT JOIN [" + marketingCloud.partyCardDetailsTable + "] AS PCD \n ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] as MPT \n ON MPT.push_key = [" + payloadAttributes.key + "] \n"
 	}
 
-	communicationQueryId = sendQuery(communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
-	logQuery(communicationQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
+	communicationQueryId = await sendQuery(communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
+	await logQuery(communicationQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 	returnIds["communication_query_id"] = assignmentQueryId;
 	if ( payloadAttributes.push_type = "offer" ) {
-		assignmentQueryId = sendQuery(assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
-		logQuery(assignmentQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
+		assignmentQueryId = await sendQuery(assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
+		await logQuery(assignmentQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 		returnIds["assignment_query_id"] = assignmentQueryId;
-		memberOfferQueryId = sendQuery(memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
-		logQuery(memberOfferQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
+		memberOfferQueryId = await sendQuery(memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
+		await logQuery(memberOfferQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 		returnIds["member_offer_query_id"] = assignmentQueryId;
 	} else {
-		messageQueryId = sendQuery(messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
-		logQuery(messageQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
+		messageQueryId = await sendQuery(messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
+		await logQuery(messageQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 		returnIds["member_message_query_id"] = assignmentQueryId;
 	}
 
