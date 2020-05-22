@@ -199,88 +199,21 @@ async function addQueryActivity(payload) {
 		console.dir("The Payload Attributes");
 		console.dir(payloadAttributes);
 
-		var communicationQuery = `
-				SELECT \n 
-				bucket.PARTY_ID, \n 
-				cpa.communication_cell_id AS COMMUNICATION_CELL_ID, \n 
-				GETDATE() as CONTACT_DATE \n 
-				FROM \n 
-				[` + payloadAttributes.update_contact + `] as bucket \n 
-				LEFT JOIN [` + marketingCloud.promotionTableName + `] as cpa \n 
-				ON cpa.promotion_key = [` + payloadAttributes.promotion_key + `] \n 
-				WHEN cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'\n`;
+		const communicationQuery = "SELECT \n bucket.PARTY_ID, \n cpa.communication_cell_id AS COMMUNICATION_CELL_ID, \n GETDATE() as CONTACT_DATE \n FROM \n [" + payloadAttributes.update_contact + "] as bucket \n LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa \n ON cpa.promotion_key = [" + payloadAttributes.promotion_key + "] \n WHEN cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'\n";
 		console.dir(communicationQuery);
 
 		if ( payloadAttributes.push_type = "offer" ) {
 
-			var assignmentQuery = `
-				SELECT \n 
-				bucket.PARTY_ID, \n 
-				cpa.MC_ID_1 AS MC_UNIQUE_PROMOTION_ID, \n 
-				GETDATE() as ASSIGNMENT_DATETIME \n 
-				FROM \n 
-				[` + payloadAttributes.update_contact + `] as bucket \n 
-				LEFT JOIN [` + marketingCloud.promotionTableName + `] as cpa \n 
-				ON cpa.promotion_key = bucket.PROMOTION_KEY \n 
-				WHEN cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' \n 
-				UNION \n 
-				SELECT \n 
-				bucket.PARTY_ID, \n 
-				cpa.MC_ID_6 AS MC_UNIQUE_PROMOTION_ID, \n 
-				GETDATE() as ASSIGNMENT_DATETIME \n 
-				FROM \n 
-				[` + payloadAttributes.update_contact + `] as bucket \n 
-				LEFT JOIN [` + marketingCloud.promotionTableName + `] as cpa \n 
-				ON cpa.promotion_key = bucket.PROMOTION_KEY \n 
-				WHEN cpa.promotionType = 'instore' OR cpa.promotionType = 'online_instore' \n`;
-				console.dir(assignmentQuery);
+			const assignmentQuery = "SELECT \n bucket.PARTY_ID, \n cpa.MC_ID_1 AS MC_UNIQUE_PROMOTION_ID, \n GETDATE() as ASSIGNMENT_DATETIME \n FROM \n [" + payloadAttributes.update_contact + "] as bucket \n LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa \n ON cpa.promotion_key = [" + payloadAttributes.promotion_key + "] \n WHEN cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' \n UNION \n SELECT \n bucket.PARTY_ID, \n cpa.MC_ID_6 AS MC_UNIQUE_PROMOTION_ID, \n GETDATE() as ASSIGNMENT_DATETIME \n FROM \n [" + payloadAttributes.update_contact + "] as bucket \n LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa \n ON cpa.promotion_key = [" + payloadAttributes.promotion_key + "] \n WHEN cpa.promotionType = 'instore' OR cpa.promotionType = 'online_instore' \n";
+			console.dir(assignmentQuery);
 
-			var memberOfferQuery = `
-				SELECT \n 
-				'Matalan' AS SCHEME_ID, \n 
-				PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, \n 
-				MPT.offer_id AS OFFER_ID, \n 
-				PT.instore_code_1 AS VOUCHER_IN_STORE_CODE, \n 
-				CASE \n 
-				WHERE PT.promotionTypeOnline = 'unique' THEN PT.unique_code_1 \n 
-				WHERE PT.promotionTypeOnline = 'global' THEN PT.global_code_1 \n 
-				END  \n 
-				AS VOUCHER_ON_LINE_CODE, \n 
-				PD.[VALID_FROM_DATETIME] AS [START_DATE_TIME], \n 
-				PD.VISIBLETO AS [END_DATE_TIME], \n 
-				PD.NUMBER_OF_REDEMPTIONS_ALLOWED AS NO_REDEMPTIONS_ALLOWED, \n 
-				PD.VISIBLEFROM AS [VISIBLE_FROM_DATE_TIME], \n 
-				'A' AS STATUS \n 
-				FROM \n 
-				[" + payloadAttributes.update_contact + "] as UpdateContactDE \n 
-				LEFT JOIN [` + marketingCloud.mobilePushMainTable + `] AS MPT \n 
-				ON MPT.push_key = [` + payloadAttributes.key + `] \n 
-				LEFT JOIN [` + marketingCloud.promotionTableName + `] as PT \n 
-				ON PT.promotion_key = MPT.offer_promotion \n 
-				LEFT JOIN [` + marketingCloud.partyCardDetailsTable + `] AS PCD \n 
-				ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n 
-				LEFT JOIN [` + marketingCloud.promotionDescriptionTable + `] AS PD \n 
-				ON PD.MC_UNIQUE_PROMOTION_ID = PT.MC_ID_6 \n`;
-				console.dir(memberOfferQuery);
+			const memberOfferQuery = "SELECT \n 'Matalan' AS SCHEME_ID, \n PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, \n MPT.offer_id AS OFFER_ID, \n PT.instore_code_1 AS VOUCHER_IN_STORE_CODE, \n CASE \n WHERE PT.promotionTypeOnline = 'unique' THEN PT.unique_code_1 \n WHERE PT.promotionTypeOnline = 'global' THEN PT.global_code_1 \n END  \n AS VOUCHER_ON_LINE_CODE, \n PD.[VALID_FROM_DATETIME] AS [START_DATE_TIME], \n PD.VISIBLETO AS [END_DATE_TIME], \n PD.NUMBER_OF_REDEMPTIONS_ALLOWED AS NO_REDEMPTIONS_ALLOWED, \n PD.VISIBLEFROM AS [VISIBLE_FROM_DATE_TIME], \n 'A' AS STATUS \n FROM \n [" + payloadAttributes.update_contact + "] as UpdateContactDE \n LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT \n ON MPT.push_key = [" + payloadAttributes.key + "] \n LEFT JOIN [" + marketingCloud.promotionTableName + "] as PT \n ON PT.promotion_key = MPT.offer_promotion \n LEFT JOIN [" + marketingCloud.partyCardDetailsTable + "] AS PCD \n ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n LEFT JOIN [" + marketingCloud.promotionDescriptionTable + "] AS PD \n ON PD.MC_UNIQUE_PROMOTION_ID = PT.MC_ID_6 \n";
+			console.dir(memberOfferQuery);
 		
 		} else {
 
-			var messageQuery = `
-				SELECT \n 
-				'Matalan' AS SCHEME_ID, \n 
-				_CustomObjectKey AS MOBILE_MESSAGE_ID, \n 
-				PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, \n 
-				MPT.message_content AS MESSAGE_CONTENT, \n 
-				CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, \n 
-				'A' AS STATUS, \n 
-				MPT.message_short_content AS SHORT_MESSAGE_CONTENT \n 
-				FROM [` + payloadAttributes.update_contact + `] as UpdateContactDE \n 
-				LEFT JOIN [` + marketingCloud.partyCardDetailsTable + `] AS PCD \n 
-				ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n 
-				LEFT JOIN [` + marketingCloud.mobilePushMainTable + `] as MPT \n 
-				ON MPT.push_key = [` + payloadAttributes.key + `] \n`;
-				console.dir(messageQuery);
-		
+			const messageQuery = "SELECT \n 'Matalan' AS SCHEME_ID, \n _CustomObjectKey AS MOBILE_MESSAGE_ID, \n PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, \n MPT.message_content AS MESSAGE_CONTENT, \n CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, \n 'A' AS STATUS, \n MPT.message_short_content AS SHORT_MESSAGE_CONTENT \n FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE \n LEFT JOIN [" + marketingCloud.partyCardDetailsTable + "] AS PCD \n ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] as MPT \n ON MPT.push_key = [" + payloadAttributes.key + "] \n";
+			console.dir(messageQuery);
 		}
 
 		const communicationQueryId = await sendQuery(communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
