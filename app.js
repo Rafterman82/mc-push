@@ -251,17 +251,23 @@ async function addQueryActivity(payload) {
 
 const logQuery = (queryId, type, scheduledDate) => new Promise((resolve, reject) => {
 
-	console.dir("Payload:");
-	console.dir(pushPayload);
+	console.dir("query:");
+	console.dir(queryId);
 	console.dir("Current Key:");
 	console.dir(incrementData);
+	var automationType;
+	if ( type ) {
+		automationType = true;
+	} else {
+		automationType = false;
+	}
 
 	var queryPayload = [{
         "keys": {
             "query_id": parseInt(queryId)
         },
         "values": {
-        	"reoccurring": type,
+        	"reoccurring": automationType,
         	"scheduled_run_date_time": scheduledDate
         }
 	}];
