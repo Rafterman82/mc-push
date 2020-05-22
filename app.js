@@ -253,8 +253,6 @@ const logQuery = (queryId, type, scheduledDate) => new Promise((resolve, reject)
 
 	console.dir("query:");
 	console.dir(queryId);
-	console.dir("Current Key:");
-	console.dir(incrementData);
 	var automationType;
 	if ( type ) {
 		automationType = true;
