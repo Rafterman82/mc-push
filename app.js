@@ -126,7 +126,7 @@ async function definePayloadAttributes(payload, seed) {
 		var attributes = {
 			key: messageKeySaved, 
 			control_group: controlGroupDE, 
-			update_contact: updateContactDE, 
+			update_contact: decodeURI(updateContactDE), 
 			query_name: automationName,
 			push_type: pushType,
 			promotion_key: promotionKey,
