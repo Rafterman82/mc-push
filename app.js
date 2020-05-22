@@ -201,18 +201,18 @@ const addQueryActivity = (payload) => new Promise((resolve, reject) => {
 		messageQuery = "SELECT \n 'Matalan' AS SCHEME_ID, \n _CustomObjectKey AS MOBILE_MESSAGE_ID, \n PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, \n MPT.message_content AS MESSAGE_CONTENT, \n CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, \n 'A' AS STATUS, \n MPT.message_short_content AS SHORT_MESSAGE_CONTENT \n FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE \n LEFT JOIN [" + marketingCloud.partyCardDetailsTable + "] AS PCD \n ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID \n LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] as MPT \n ON MPT.push_key = [" + payloadAttributes.key + "] \n"
 	}
 
-	const communicationQueryId = await sendQuery(communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
+	communicationQueryId = sendQuery(communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
 	logQuery(communicationQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 	returnIds["communication_query_id"] = assignmentQueryId;
 	if ( payloadAttributes.push_type = "offer" ) {
-		const assignmentQueryId = await sendQuery(assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
+		assignmentQueryId = sendQuery(assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
 		logQuery(assignmentQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 		returnIds["assignment_query_id"] = assignmentQueryId;
-		const memberOfferQueryId = await sendQuery(memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
+		memberOfferQueryId = sendQuery(memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
 		logQuery(memberOfferQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 		returnIds["member_offer_query_id"] = assignmentQueryId;
 	} else {
-		const messageQueryId = await sendQuery(messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
+		messageQueryId = sendQuery(messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
 		logQuery(messageQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 		returnIds["member_message_query_id"] = assignmentQueryId;
 	}
