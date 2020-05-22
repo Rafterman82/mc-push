@@ -176,7 +176,7 @@ const sendQuery = (query, target, name, description) => new Promise((resolve, re
 		})
 		.then(function (response) {
 			console.dir(response.data);
-			return resolve(response.data.items[0].queryDefinitionId);
+			return resolve(response.data.queryDefinitionId);
 		})
 		.catch(function (error) {
 			console.dir(error);
