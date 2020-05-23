@@ -29,8 +29,6 @@ if ( !local ) {
 	  insertDataExtension: 			process.env.insertDataExtension,
 	  incrementDataExtension: 		process.env.incrementDataExtension,
 	  seedDataExtension: 			process.env.seedlist,
-	  targetKey: 					process.env.targetKey,
-	  targetId: 					process.env.targetId,
 	  automationEndpoint: 			process.env.automationEndpoint,
 	  promotionTableName: 			process.env.promotionTableName,
 	  communicationTableName: 		process.env.communicationTableName,
@@ -41,7 +39,15 @@ if ( !local ) {
 	  partyCardDetailsTable:  		process.env.partyCardDetailsTable,
 	  promotionDescriptionTable: 	process.env.promotionDescriptionTable,
 	  seedListTable: 				process.env.seedListTable,
-	  automationScheduleExtension:  process.env.automationScheduleExtension
+	  automationScheduleExtension:  process.env.automationScheduleExtension,
+	  communicationHistoryID: 		process.env.communicationHistoryID,
+	  communicationHistoryKey: 		process.env.communicationHistoryKey,
+	  assignmentID: 				process.env.assignmentID,
+	  assignmentKey: 				process.env.assignmentKey,
+	  messageID: 					process.env.messageID,
+	  messageKey: 					process.env.messageKey,
+	  offerID: 						process.env.offerID,
+	  offerKey: 					process.env.offerKey
 	};
 	console.dir(marketingCloud);
 }
@@ -145,12 +151,12 @@ async function definePayloadAttributes(payload, seed) {
 	}
 
 };
-const sendQuery = (query, target, name, description) => new Promise((resolve, reject) => {
+const sendQuery = (targetId, targetKey, query, target, name, description) => new Promise((resolve, reject) => {
 
 	getOauth2Token().then((tokenResponse) => {
 
-		console.dir("Oauth Token");
-		console.dir(tokenResponse);
+		//console.dir("Oauth Token");
+		//console.dir(tokenResponse);
 
 		/**
 		* targetUpdateTypeId
@@ -164,8 +170,8 @@ const sendQuery = (query, target, name, description) => new Promise((resolve, re
 		    "description": description,
 		    "queryText": query,
 		    "targetName": target,
-		    "targetKey": marketingCloud.targetKey,
-		    "targetId": marketingCloud.targetId,
+		    "targetKey": targetKey,
+		    "targetId": targetId,
 		    "targetUpdateTypeId": 0,
 		    "categoryId": 21650
 		}
@@ -220,7 +226,7 @@ async function addQueryActivity(payload) {
 			console.dir(messageQuery);
 		}
 
-		const communicationQueryId = await sendQuery(communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
+		const communicationQueryId = await sendQuery(marketingCloud.communicationHistoryID, marketingCloud.communicationHistoryKey, communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
 		
 		await logQuery(communicationQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 		
@@ -228,22 +234,21 @@ async function addQueryActivity(payload) {
 		
 		if ( payloadAttributes.push_type == "offer" ) {
 			
-			const assignmentQueryId = await sendQuery(assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
+			const assignmentQueryId = await sendQuery(marketingCloud.assignmentID, marketingCloud.assignmentKey, assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
 			await logQuery(assignmentQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 			returnIds["assignment_query_id"] = assignmentQueryId;
-			const memberOfferQueryId = await sendQuery(memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
+			const memberOfferQueryId = await sendQuery(marketingCloud.offerID, marketingCloud.offerKey, memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
 			await logQuery(memberOfferQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 			returnIds["member_offer_query_id"] = assignmentQueryId;
 		
 		} else if (payloadAttributes.push_type = "message") {
 			
-			const messageQueryId = await sendQuery(messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
+			const messageQueryId = await sendQuery(marketingCloud.messageID, marketingCloud.messageKey, messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
 			await logQuery(messageQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 			returnIds["member_message_query_id"] = assignmentQueryId;
 
 		}
 		
-
 		return returnIds;
 
 	} catch(e) {
@@ -255,6 +260,8 @@ async function addQueryActivity(payload) {
 
 const logQuery = (queryId, type, scheduledDate) => new Promise((resolve, reject) => {
 
+	console.dir("type:");
+	console.dir(type);
 	console.dir("query:");
 	console.dir(queryId);
 	var automationType;
