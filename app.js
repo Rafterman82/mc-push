@@ -224,7 +224,7 @@ async function addQueryActivity(payload) {
 		
 		returnIds["communication_query_id"] = communicationQueryId;
 		
-		if ( payloadAttributes.push_type = "offer" ) {
+		if ( payloadAttributes.push_type == "offer" ) {
 			
 			const assignmentQueryId = await sendQuery(assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
 			await logQuery(assignmentQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
@@ -233,7 +233,7 @@ async function addQueryActivity(payload) {
 			await logQuery(memberOfferQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
 			returnIds["member_offer_query_id"] = assignmentQueryId;
 		
-		} else {
+		} else if (payloadAttributes.push_type = "message") {
 			
 			const messageQueryId = await sendQuery(messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
 			await logQuery(messageQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
