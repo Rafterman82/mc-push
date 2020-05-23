@@ -200,6 +200,8 @@ async function addQueryActivity(payload) {
 		const payloadAttributes = await definePayloadAttributes(payload);
 		console.dir("The Payload Attributes");
 		console.dir(payloadAttributes);
+		console.dir("The Payload Attributes type is");
+		console.dir(payloadAttributes.push_type);
 
 		const communicationQuery = "SELECT bucket.PARTY_ID, cpa.communication_cell_id AS COMMUNICATION_CELL_ID, GETDATE() as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = " + payloadAttributes.promotion_key + " WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
 		console.dir(communicationQuery);
@@ -227,16 +229,16 @@ async function addQueryActivity(payload) {
 		if ( payloadAttributes.push_type == "offer" ) {
 			
 			const assignmentQueryId = await sendQuery(assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
-			await logQuery(assignmentQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
+			await logQuery(assignmentQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 			returnIds["assignment_query_id"] = assignmentQueryId;
 			const memberOfferQueryId = await sendQuery(memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
-			await logQuery(memberOfferQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
+			await logQuery(memberOfferQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 			returnIds["member_offer_query_id"] = assignmentQueryId;
 		
 		} else if (payloadAttributes.push_type = "message") {
 			
 			const messageQueryId = await sendQuery(messageQuery, marketingCloud.messageTableName, "IF008 Message - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
-			await logQuery(messageQueryId, payloadAttributes.automationReoccuring, payloadAttributes.query_date);
+			await logQuery(messageQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 			returnIds["member_message_query_id"] = assignmentQueryId;
 
 		}
