@@ -174,7 +174,7 @@ const sendQuery = (targetId, targetKey, query, target, name, description) => new
 		    "targetName": target,
 		    "targetKey": targetKey,
 		    "targetId": targetId,
-		    "targetUpdateTypeId": 0,
+		    "targetUpdateTypeId": 2,
 		    "categoryId": marketingCloud.queryFolder
 		}
 
@@ -396,11 +396,13 @@ const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve
 	
 });
 
+
 async function buildAndSend(payload) {
 	try {
 		const incrementData = await getIncrements();
 		const pushPayload = await buildPushPayload(payload, incrementData);
 		const pushObject = await saveToDataExtension(pushPayload, incrementData);
+
 		await updateIncrements(incrementData);
 		return pushPayload;
 	} catch(err) {
