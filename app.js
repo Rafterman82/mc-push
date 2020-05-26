@@ -198,7 +198,7 @@ const sendQuery = (targetId, targetKey, query, target, name, description) => new
 });
 
 
-async function addQueryActivity(payload) {
+async function addQueryActivity(payload, seed) {
 
 	console.dir("Payload for Query");
 	console.dir(payload);
@@ -210,6 +210,10 @@ async function addQueryActivity(payload) {
 		console.dir(payloadAttributes);
 		console.dir("The Payload Attributes type is");
 		console.dir(payloadAttributes.push_type);
+
+		if ( seed ) {
+			payloadAttributes.update_contact = marketingCloud.seedListTable;
+		}
 
 		const communicationQuery = "SELECT bucket.PARTY_ID, cpa.communication_cell_id AS COMMUNICATION_CELL_ID, GETDATE() as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = " + payloadAttributes.promotion_key + " WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
 		console.dir(communicationQuery);
@@ -508,7 +512,7 @@ app.post('/automation/create/query', async function (req, res){
 	console.dir("Dump request body");
 	console.dir(req.body);
 	try {
-		const returnedQueryId = await addQueryActivity(req.body);
+		const returnedQueryId = await addQueryActivity(req.body, false);
 		res.send(JSON.stringify(returnedQueryId));
 	} catch(err) {
 		console.dir(err);
@@ -521,8 +525,8 @@ app.post('/automation/create/query/seed', async function (req, res){
 	console.dir("Dump request body");
 	console.dir(req.body);
 	try {
-		const returnedSeedQueryId = await addSeedQueryActivity(req.body);
-		res.send(JSON.stringify(returnedSeedQueryId));
+		const returnedQueryId = await addQueryActivity(req.body, true);
+		res.send(JSON.stringify(returnedQueryId));
 	} catch(err) {
 		console.dir(err);
 	}
