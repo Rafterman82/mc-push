@@ -20,7 +20,7 @@
         }                 
       ],
           "outArguments": [],
-          "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/execute",
+          "url": "https://journey-builder-push-mat.herokuapp.com/journeybuilder/execute",
            "verb": "POST",
             "body": "",
             "header": "",
@@ -32,22 +32,22 @@
     "configurationArguments": {
       "applicationExtensionKey": "78af6360-199e-49aa-b51e-2cc8cd939819",
       "save": {
-        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/save",
+        "url": "https://journey-builder-push-mat.herokuapp.com/journeybuilder/save",
           "verb": "POST",
         "useJwt": true
        },
        "publish": {
-        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/publish",
+        "url": "https://journey-builder-push-mat.herokuapp.com/journeybuilder/publish",
            "verb": "POST",
         "useJwt": true
        },
       "stop": {
-        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/stop",
+        "url": "https://journey-builder-push-mat.herokuapp.com/journeybuilder/stop",
            "verb": "POST",
         "useJwt": true
       },
       "validate": {
-        "url": "https://mc-jb-custom-activity-ca-popm.herokuapp.com/journeybuilder/validate",
+        "url": "https://journey-builder-push-mat.herokuapp.com/journeybuilder/validate",
         "verb": "POST",
         "useJwt": true
       }
