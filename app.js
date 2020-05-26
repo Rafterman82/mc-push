@@ -434,7 +434,7 @@ const executeQuery = (executeThisQueryId) => new Promise((resolve, reject) => {
 	console.dir("Executing this query Id");
 	console.dir(executeThisQueryId);
 
-	var queryPayload = marketingCloud.queryUrl + executeThisQueryId + "/actions/start/";
+	var queryPayload = queryUrl + executeThisQueryId + "/actions/start/";
 	
 	console.dir(queryPayload);
 
