@@ -108,6 +108,7 @@ async function definePayloadAttributes(payload, seed) {
 	var automationRunDate;
 	var automationRunTime;
 	var automationReoccuring;
+	var setAutomationState = false;
 	
 	try {
 		for ( t = 0; t < payload.length; t++ ) {
@@ -133,6 +134,12 @@ async function definePayloadAttributes(payload, seed) {
 			}
 		}
 
+		if ( !automationReoccuring ) {
+			setAutomationState = false;
+		} else {
+			setAutomationState = true;
+		}
+
 		var attributes = {
 			key: messageKeySaved, 
 			control_group: decodeURI(controlGroupDE), 
@@ -141,7 +148,7 @@ async function definePayloadAttributes(payload, seed) {
 			push_type: pushType,
 			promotion_key: promotionKey,
 			query_date: automationRunDate + " " + automationRunTime,
-			query_reoccuring: automationReoccuring
+			query_reoccuring: setAutomationState
 		};
 
 		console.dir("The attributes return is");
