@@ -48,7 +48,7 @@ if ( !local ) {
 	  messageKey: 					process.env.messageKey,
 	  offerID: 						process.env.offerID,
 	  offerKey: 					process.env.offerKey,
-	  queryFolder: 					process.env.QueryFolder
+	  queryFolder: 					process.env.queryFolder
 	};
 	console.dir(marketingCloud);
 }
