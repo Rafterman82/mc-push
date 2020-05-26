@@ -436,7 +436,7 @@ const executeQuery = (executeThisQueryId) => new Promise((resolve, reject) => {
 
 	var queryPayload = marketingCloud.queryUrl + executeThisQueryId + "/actions/start/";
 	
-	console.dir(insertPayload);
+	console.dir(queryPayload);
 
 	getOauth2Token().then((tokenResponse) => {
 	   	axios({
