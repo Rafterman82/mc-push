@@ -220,12 +220,14 @@ async function addQueryActivity(payload, seed) {
 
 		if ( seed ) {
 			payloadAttributes.update_contact = marketingCloud.seedListTable;
+			payloadAttributes.query_name = payloadAttributes.query_name + " - SEEDLIST";
+
 		}
 
 		const communicationQuery = "SELECT bucket.PARTY_ID, cpa.communication_cell_id AS COMMUNICATION_CELL_ID, GETDATE() as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = " + payloadAttributes.promotion_key + " WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
 		console.dir(communicationQuery);
 
-		const communicationQueryId = await sendQuery(marketingCloud.communicationHistoryID, marketingCloud.communicationHistoryKey, communicationQuery, marketingCloud.communicationTableName, "Communication Cell - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
+		const communicationQueryId = await sendQuery(marketingCloud.communicationHistoryID, marketingCloud.communicationHistoryKey, communicationQuery, marketingCloud.communicationTableName, "IF028 - Communication History - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
 		await logQuery(communicationQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 		returnIds["communication_query_id"] = communicationQueryId;
 
@@ -237,7 +239,7 @@ async function addQueryActivity(payload, seed) {
 			const memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, PT.instore_code_1 AS VOUCHER_IN_STORE_CODE, CASE WHEN PT.onlinePromotionType = 'unique' THEN PT.unique_code_1 WHEN PT.onlinePromotionType = 'global' THEN PT.global_code_1 END  AS VOUCHER_ON_LINE_CODE, PD.[VALID_FROM_DATETIME] AS [START_DATE_TIME], PD.VISIBLETO AS [END_DATE_TIME], PD.NUMBER_OF_REDEMPTIONS_ALLOWED AS NO_REDEMPTIONS_ALLOWED, PD.VISIBLEFROM AS [VISIBLE_FROM_DATE_TIME], 'A' AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' LEFT JOIN [" + marketingCloud.promotionTableName + "] as PT ON PT.promotion_key = MPT.offer_promotion LEFT JOIN [" + marketingCloud.partyCardDetailsTable + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID LEFT JOIN [" + marketingCloud.promotionDescriptionTable + "] AS PD ON PD.MC_UNIQUE_PROMOTION_ID = PT.MC_ID_6";
 			console.dir(memberOfferQuery);
 
-			const assignmentQueryId = await sendQuery(marketingCloud.assignmentID, marketingCloud.assignmentKey, assignmentQuery, marketingCloud.assignmentTableName, "Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
+			const assignmentQueryId = await sendQuery(marketingCloud.assignmentID, marketingCloud.assignmentKey, assignmentQuery, marketingCloud.assignmentTableName, "IF024 Assignment - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
 			await logQuery(assignmentQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 			returnIds["assignment_query_id"] = assignmentQueryId;
 			const memberOfferQueryId = await sendQuery(marketingCloud.offerID, marketingCloud.offerKey, memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
