@@ -475,7 +475,7 @@ Authorization: Bearer {{Oauth Key}}
 Content-Type: application/json
 
 */
-app.get('/run/query/:queryId', async function(req, res) {
+app.post('/run/query/:queryId', async function(req, res) {
 
 	//res.send("Enviro is " + req.params.enviro + " | Interface is " + req.params.interface + " | Folder is " + req.params.folder);
 	console.dir("Query ID sent from Automation Studio");
