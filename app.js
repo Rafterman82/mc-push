@@ -480,7 +480,7 @@ app.post('/run/query/:queryId', async function(req, res) {
 	//res.send("Enviro is " + req.params.enviro + " | Interface is " + req.params.interface + " | Folder is " + req.params.folder);
 	console.dir("Query ID sent from Automation Studio");
 	console.dir(req.params.queryId);
-	var exexcuteThisQueryId = req.params.queryId;
+	var excuteThisQueryId = req.params.queryId;
 	try {
 		const returnQueryResponse = await runQuery(executeThisQueryId);
 		console.dir("The query response object is");
