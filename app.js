@@ -47,7 +47,8 @@ if ( !local ) {
 	  messageID: 					process.env.messageID,
 	  messageKey: 					process.env.messageKey,
 	  offerID: 						process.env.offerID,
-	  offerKey: 					process.env.offerKey
+	  offerKey: 					process.env.offerKey,
+	  queryFolder: 					process.env.QueryFolder
 	};
 	console.dir(marketingCloud);
 }
@@ -61,6 +62,7 @@ const insertUrl 		= marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketi
 const incrementsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.incrementDataExtension 		+ "/rowset";
 const updateIncrementUrl = marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketingCloud.incrementDataExtension 			+ "/rowset";
 const automationUrl = marketingCloud.automationEndpoint;
+const queryUrl = marketingCloud.restUrl + "/automation/v1/queries/";
 
 // Configure Express master
 app.set('port', process.env.PORT || 3000);
@@ -173,7 +175,7 @@ const sendQuery = (targetId, targetKey, query, target, name, description) => new
 		    "targetKey": targetKey,
 		    "targetId": targetId,
 		    "targetUpdateTypeId": 0,
-		    "categoryId": 21650
+		    "categoryId": marketingCloud.queryFolder
 		}
 
 	   	axios({
@@ -426,6 +428,62 @@ async function sendBackPayload(payload) {
 	}
 
 }
+
+const executeQuery = (executeThisQueryId) => new Promise((resolve, reject) => {
+
+	console.dir("Executing this query Id");
+	console.dir(executeThisQueryId);
+
+	var queryPayload = marketingCloud.queryUrl + executeThisQueryId + "/actions/start/";
+	
+	console.dir(insertPayload);
+
+	getOauth2Token().then((tokenResponse) => {
+	   	axios({
+			method: 'post',
+			url: queryPayload,
+			headers: {'Authorization': tokenResponse},
+		})
+		.then(function (response) {
+			console.dir(response.data);
+			return resolve(response.data);
+		})
+		.catch(function (error) {
+			console.dir(error);
+			return reject(error);
+		});
+	})	
+	
+});
+
+async function runQuery(executeThisQueryId) {
+	try {
+		const returnQueryStatus = await executeQuery(executeThisQueryId);
+		return returnQueryStatus;
+	} catch(err) {
+		console.dir(err);
+	}
+}
+
+/**
+
+POST /automation/v1/queries/{{queryID}}/actions/start/
+Host: {{yourendpoint}}.rest.marketingcloudapis.com
+Authorization: Bearer {{Oauth Key}}
+Content-Type: application/json
+
+*/
+app.get('/run/query/:queryId', async function(req, res) {
+
+	//res.send("Enviro is " + req.params.enviro + " | Interface is " + req.params.interface + " | Folder is " + req.params.folder);
+	var exexcuteThisQueryId = req.params.queryId;
+	try {
+		const returnQueryResponse = await runQuery(executeThisQueryId);
+		res.send(JSON.stringify(returnQueryResponse));
+	} catch (err) {
+		console.dir(err);
+	}
+});
 
 // insert data into data extension
 app.post('/dataextension/add/', async function (req, res){ 
