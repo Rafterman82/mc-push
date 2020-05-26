@@ -8,7 +8,7 @@
     "type": "REST",
     "lang": {
         "en-US": {
-          "name": "SIT PUSH Message",
+          "name": "PROD PUSH Message",
           "description": "Create a PUSH Message and Offer"
         }
     },
