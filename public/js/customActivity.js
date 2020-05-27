@@ -188,6 +188,9 @@ define([
 
             if ( pushType === 'message' ) {
 
+                // hide control group field
+                $("#control_group_box").show();
+
                 if ( debug ) {
                     console.log("trigger step 1");   
                 }
@@ -206,6 +209,9 @@ define([
                 connection.trigger('updateSteps', steps);
 
             } else if ( pushType === 'offer' ) {
+
+                // hide control group field
+                $("#control_group_box").hide();
 
                 if ( debug ) {
                     console.log("trigger step 2");   

@@ -424,7 +424,7 @@ const updateCommunicationCellIncrement = (key) => new Promise((resolve, reject) 
 	getOauth2Token().then((tokenResponse) => {
 	   	axios({
 			method: 'post',
-			url: updateCommCellIncrementUrll,
+			url: updateCommCellIncrementUrl,
 			headers: {'Authorization': tokenResponse},
 			data: insertPayload
 		})
