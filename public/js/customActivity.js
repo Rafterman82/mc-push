@@ -27,6 +27,8 @@ define([
     var stepValidation = false;
     var payloadToSave;
     var summaryPayload;
+    var today = new Date();
+    var currentTime = today.toGMTString();
 
     if ( debug ) {
         console.log("Current Step is: " + currentStep);
@@ -249,6 +251,8 @@ define([
         $("#control_action_create").click(function(){
             createAutomation(buildActivityPayload());
         });
+
+        $("#current_time").html(currentTime);
 
     }
 
