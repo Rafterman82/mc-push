@@ -594,13 +594,16 @@ define([
                 }
 
                 var i;
-                for (i = 0; i < result.items.length; ++i) {
-                    if ( debug ) {
-                        console.log(result.items[i].keys);
-                    }
-                    // do something with `substr[i]
-                    $(".offer_promotion").append("<option data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
+                if ( result.items.length > 0 ) {
+                    for (i = 0; i < result.items.length; ++i) {
+                        if ( debug ) {
+                            console.log(result.items[i].keys);
+                        }
+                        // do something with `substr[i]
+                        $(".offer_promotion").append("<option data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
+                    }                   
                 }
+
                 updateApiStatus("promotions-api", true);
             }
 
