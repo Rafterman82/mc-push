@@ -287,9 +287,6 @@
             <div class="slds-col slds-size_1-of-2">
                 <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
                     <h2>PUSH Message Setup</h2>
-                    <div class="slds-form-element">
-                        <input type="hidden" id="message_status" value="A" />
-                    </div>
                     <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-form-element">
@@ -368,6 +365,23 @@
                         </div>
                         <div class="slds-form-element__help" id="form-error__campaign_code">This field is required</div>
                     </div>
+                </div>
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <fieldset class="slds-form-element slds-form-element_stacked">
+                        <legend class="slds-form-element__legend slds-form-element__label">Message Status</legend>
+                        <div class="slds-form-element sfmc-input">
+                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Message Status</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" id="message_status">
+                                        <option selected value="A">Add</option>
+                                        <option value="C">Change / Update</option>
+                                        <option value="D">Delete</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
         </div>
@@ -557,12 +571,24 @@
                                     </select>
                                 </div>
                             </div>
-                                                <div class="slds-form-element">
-                        <label class="slds-form-element__label" for="text-input-id-22"><abbr class="slds-required" title="required">* </abbr>Offer ID</label>
-                        <div class="slds-form-element__control">
-                            <input type="text" id="offer_id" placeholder="" required="" class="slds-input" />
-                        </div>
-                    </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-22"><abbr class="slds-required" title="required">* </abbr>Offer ID</label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" id="offer_id" placeholder="" required="" class="slds-input" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element sfmc-input">
+                                <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Offer Status</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" id="offer_status">
+                                            <option selected value="A">Add</option>
+                                            <option value="C">Change / Update</option>
+                                            <option value="D">Delete</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>                
