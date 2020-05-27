@@ -23,11 +23,13 @@ if ( !local ) {
 	  clientSecret: 				process.env.clientSecret,
 	  restUrl: 						process.env.restUrl,
 	  appUrl: 						process.env.baseUrl,
+	  communicationCellDataExtension: 			process.env.communicationCellDataExtension,
 	  controlGroupsDataExtension: 	process.env.controlGroupsDataExtension,
 	  updateContactsDataExtension: 	process.env.updateContactsDataExtension,
 	  promotionsDataExtension: 		process.env.promotionsDataExtension,
 	  insertDataExtension: 			process.env.insertDataExtension,
 	  incrementDataExtension: 		process.env.incrementDataExtension,
+	  commCellIncrementDataExtension: process.env.commCellIncrementDataExtension
 	  seedDataExtension: 			process.env.seedlist,
 	  automationEndpoint: 			process.env.automationEndpoint,
 	  promotionTableName: 			process.env.promotionTableName,
@@ -54,15 +56,20 @@ if ( !local ) {
 }
 
 // url constants
-const scheduleUrl = marketingCloud.restUrl + "hub/v1/dataevents/key:" + marketingCloud.automationScheduleExtension + "/rowset";
-const controlGroupsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
-const updateContactsUrl = marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
-const promotionsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
-const insertUrl 		= marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketingCloud.insertDataExtension 			+ "/rowset";
-const incrementsUrl 	= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.incrementDataExtension 		+ "/rowset";
-const updateIncrementUrl = marketingCloud.restUrl + "hub/v1/dataevents/key:" 	+ marketingCloud.incrementDataExtension 			+ "/rowset";
-const automationUrl = marketingCloud.automationEndpoint;
-const queryUrl = marketingCloud.restUrl + "/automation/v1/queries/";
+const scheduleUrl 					= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.automationScheduleExtension 	+ "/rowset";
+const communicationCellUrl 			= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.communicationCellDataExtension + "/rowset";
+const controlGroupsUrl 				= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.controlGroupsDataExtension 	+ "/rowset";
+const updateContactsUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.updateContactsDataExtension 	+ "/rowset";
+const promotionsUrl 				= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.promotionsDataExtension 		+ "/rowset";
+const insertUrl 					= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.insertDataExtension 			+ "/rowset";
+const incrementsUrl 				= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.incrementDataExtension 		+ "/rowset";
+const updateIncrementUrl 			= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.incrementDataExtension 		+ "/rowset";
+const commCellIncrementUrl 			= marketingCloud.restUrl + "data/v1/customobjectdata/key/" 	+ marketingCloud.commCellIncrementDataExtension + "/rowset";
+const updateCommCellIncrementUrl  	= marketingCloud.restUrl + "hub/v1/dataevents/key:" 		+ marketingCloud.commCellIncrementDataExtension + "/rowset";
+
+
+const automationUrl 		= marketingCloud.automationEndpoint;
+const queryUrl 				= marketingCloud.restUrl + "/automation/v1/queries/";
 
 // Configure Express master
 app.set('port', process.env.PORT || 3000);
@@ -338,6 +345,26 @@ const getIncrements = () => new Promise((resolve, reject) => {
 	})
 });
 
+const getCommCellIncrements = () => new Promise((resolve, reject) => {
+	getOauth2Token().then((tokenResponse) => {
+
+		axios.get(commCellIncrementUrl, { 
+			headers: { 
+				Authorization: tokenResponse
+			}
+		})
+		.then(response => {
+			// If request is good...
+			console.dir(response.data.items[0].values);
+			return resolve(response.data.items[0].values);
+		})
+		.catch((error) => {
+		    console.dir("Error getting increments");
+		    return reject(error);
+		});
+	})
+});
+
 const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => {
 
 	console.dir("Current Increment");
@@ -377,6 +404,86 @@ const updateIncrements = (currentIncrement) => new Promise((resolve, reject) => 
 	})	
 	
 });
+
+const updateCommunicationCellIncrement = (key) => new Promise((resolve, reject) => {
+
+	console.dir("current key is");
+	console.dir(key);
+
+	var insertPayload = [{
+        "keys": {
+            "increment_key": 1
+        },
+        "values": {
+        	"communication_cell_code_id_increment": parseInt(key + 3)
+        }
+	}];
+		
+	console.dir(insertPayload);
+
+	getOauth2Token().then((tokenResponse) => {
+	   	axios({
+			method: 'post',
+			url: updateCommCellIncrementUrll,
+			headers: {'Authorization': tokenResponse},
+			data: insertPayload
+		})
+		.then(function (response) {
+			console.dir(response.data);
+			return resolve(response.data);
+		})
+		.catch(function (error) {
+			console.dir(error);
+			return reject(error);
+		});
+	})	
+	
+});
+
+const saveToCommunicationDataExtension = (payload, commCellIncrementData) => new Promise((resolve, reject) => {
+
+	console.dir("Payload:");
+	console.dir(payload);
+	console.dir("increment object:");
+	console.dir(commCellIncrementData);
+
+	var insertPayload = [{
+        "keys": {
+            "communication_cell_id": (parseInt(key) + 1)
+        },
+        "values": payload.control,
+
+	},
+	{
+        "keys": {
+            "communication_cell_id": (parseInt(key) + 2)
+        },
+        "values": payload.not_control,
+        
+	}];
+	
+	console.dir(insertPayload);
+
+	getOauth2Token().then((tokenResponse) => {
+	   	axios({
+			method: 'post',
+			url: communicationCellUrl,
+			headers: {'Authorization': tokenResponse},
+			data: insertPayload
+		})
+		.then(function (response) {
+			console.dir(response.data);
+			return resolve(response.data);
+		})
+		.catch(function (error) {
+			console.dir(error);
+			return reject(error);
+		});
+	})	
+	
+});
+
+
 
 const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve, reject) => {
 
@@ -418,17 +525,24 @@ const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve
 async function buildAndSend(payload) {
 	try {
 		const incrementData = await getIncrements();
-		const pushPayload = await buildPushPayload(payload, incrementData);
+		const commCellIncrementData = await getCommCellIncrements();
+
+		const commPayload = await buildCommPayload(payload);
+		const commObject = await saveToCommunicationDataExtension(commPayload, commCellIncrementData.communication_cell_code_id_increment);
+
+		const pushPayload = await buildPushPayload(payload);
 		const pushObject = await saveToDataExtension(pushPayload, incrementData);
 
 		await updateIncrements(incrementData);
+		await updateCommunicationCellIncrement(commCellIncrementData.communication_cell_code_id_increment);
+
 		return pushPayload;
 	} catch(err) {
 		console.dir(err);
 	}
 }
 
-function buildPushPayload(payload, incrementData) {
+function buildPushPayload(payload) {
 	var mobilePushData = {};
 	for ( var i = 0; i < payload.length; i++ ) {
 		//console.dir("Step is: " + payload[i].step + ", Key is: " + payload[i].key + ", Value is: " + payload[i].value + ", Type is: " + payload[i].type);
@@ -439,6 +553,33 @@ function buildPushPayload(payload, incrementData) {
 	console.dir(mobilePushData);
 
 	return mobilePushData;
+}
+
+function buildCommPayload(payload) {
+	var communicationCellData = {
+			"not_control": {
+		    	"cell_code"					: payload["cell_code"],
+		    	"cell_name"					: payload["cell_name"],
+		        "campaign_name"				: payload["campaign_name"],
+		        "campaign_id"				: payload["campaign_id"],
+		        "campaign_code"				: payload["campaign_code"],
+		        "cell_type"					: "1",
+		        "channel"					: payload["channel"],
+		        "is_putput_flag"			: "1"				
+			},
+			"control": {
+		    	"cell_code"					: payload["cell_code"],
+		    	"cell_name"					: payload["cell_name"],
+		        "campaign_name"				: payload["campaign_name"],
+		        "campaign_id"				: payload["campaign_id"],
+		        "campaign_code"				: payload["campaign_code"],
+		        "cell_type"					: "2",
+		        "channel"					: payload["channel"],
+		        "is_putput_flag"			: "0"				
+			}
+	};
+	console.dir(communicationCellData);
+	return communicationCellData;
 }
 
 async function sendBackPayload(payload) {
@@ -559,6 +700,27 @@ app.get("/dataextension/lookup/increments", (req, res, next) => {
 	getOauth2Token().then((tokenResponse) => {
 
 		axios.get(incrementsUrl, { 
+			headers: { 
+				Authorization: tokenResponse
+			}
+		})
+		.then(response => {
+			// If request is good... 
+			res.json(response.data);
+		})
+		.catch((error) => {
+		    console.dir("Error getting increments");
+		    console.dir(error);
+		});
+	})
+});
+
+//Fetch increment values
+app.get("/dataextension/lookup/commincrements", (req, res, next) => {
+
+	getOauth2Token().then((tokenResponse) => {
+
+		axios.get(commCellIncrementUrl, { 
 			headers: { 
 				Authorization: tokenResponse
 			}

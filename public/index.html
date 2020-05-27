@@ -104,14 +104,14 @@
                         <legend class="slds-form-element__legend slds-form-element__label">PUSH Message Type</legend>
                         <div class="slds-form-element__control">
                             <span class="slds-radio">
-                                <input type="radio" class="promotion_type" id="radio-1" value="message" name="pushType" checked="checked" />
+                                <input type="radio" class="promotion_type" id="radio-1" value="message" name="push_type" checked="checked" />
                                 <label class="slds-radio__label" for="radio-1">
                                     <span class="slds-radio_faux"></span>
                                     <span class="slds-form-element__label">PUSH Message</span>
                                 </label>
                             </span>
                             <span class="slds-radio">
-                                <input type="radio" class="promotion_type" id="radio-2" value="offer" name="pushType" />
+                                <input type="radio" class="promotion_type" id="radio-2" value="offer" name="push_type" />
                                 <label class="slds-radio__label" for="radio-2">
                                     <span class="slds-radio_faux"></span>
                                     <span class="slds-form-element__label">PUSH Offer</span>
@@ -168,7 +168,7 @@
                         </div>
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-form-element">
-                              <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>Automation Run Time</label>
+                              <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>Automation Run Time (GMT)</label>
                               <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                   <select class="slds-select" id="automation_run_time">
@@ -327,17 +327,45 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="slds-form-element sfmc-input">
-                                <label class="slds-form-element__label"><b>Promotion (Required for COMM Cell use no-code)</b></label>
-                                <div class="slds-form-element__control">
-                                    <div class="slds-select_container">
-                                        <select class="slds-select offer_promotion" id="offer_promotion">
-                                            <option value="no-code">No Code</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
+                    </div>
+                </div>
+                <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small">
+                    <h2>Communication History Data</h2>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Cell Code</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="cell_code" placeholder="Cell Code (e.g some-cell-code)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__cell_code">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Cell Name</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="cell_name" placeholder="Cell Name (e.g some-cell-name)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__cell_name">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Campaign Name</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="campaign_name" placeholder="Campaign Name (e.g some-campaign-name)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__campaign_name">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Campaign ID</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="int" data-attribute-length="30" id="campaign_id" placeholder="Campaign ID (e.g 12345)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__campaign_id">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Campaign Code</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="campaign_code" placeholder="Campaign Code (e.g some-campaign-code)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__campaign_code">This field is required</div>
                     </div>
                 </div>
             </div>

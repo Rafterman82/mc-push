@@ -100,7 +100,7 @@ define([
             var argKey;
 
             for ( r = 0; r < argumentsSummaryPayload.buildPayload.length; r++ ) {
-                if ( argumentsSummaryPayload.buildPayload[r].key == "pushType" ) {
+                if ( argumentsSummaryPayload.buildPayload[r].key == "push_type" ) {
                     argPromotionType = argumentsSummaryPayload.buildPayload[r].value; 
                 } else if ( argumentsSummaryPayload.buildPayload[r].key == "promotion_key_hidden" ) {
                     argKey = argumentsSummaryPayload.buildPayload[r].value;
@@ -178,7 +178,7 @@ define([
         // render relevant steps based on input
         $('.promotion_type').click(function() {
 
-            var pushType = $("input[name='pushType']:checked").val();
+            var pushType = $("input[name='push_type']:checked").val();
 
             if ( debug ) {
                 console.log(pushType);
@@ -302,7 +302,7 @@ define([
                     }
                     
                 } else if ( argumentsSummaryPayload[q].type == "radio") {
-                    if ( argumentsSummaryPayload[q].key == "pushType") {
+                    if ( argumentsSummaryPayload[q].key == "push_type") {
                         if ( argumentsSummaryPayload[q].value == "message") {
                             $("#radio-1").prop('checked', true);
                             $("#radio-1").click();
@@ -599,7 +599,7 @@ define([
                         console.log(result.items[i].keys);
                     }
                     // do something with `substr[i]
-                    $(".offer_promotion").append("<option value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
+                    $(".offer_promotion").append("<option data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
                 }
                 updateApiStatus("promotions-api", true);
             }
@@ -670,7 +670,7 @@ define([
 
     function onClickedNext () {
 
-        var pushType = $("#step0 .slds-radio input[name='pushType']:checked").val();
+        var pushType = $("#step0 .slds-radio input[name='push_type']:checked").val();
 
         if ( debug ) {
             console.log(pushType);
@@ -1170,7 +1170,7 @@ define([
 
                 if ( summaryPayload[z].step == 1 ) {
 
-                    if ( summaryPayload[z].key == "pushType" ) {
+                    if ( summaryPayload[z].key == "push_type" ) {
                         var summaryPromotionType = summaryPayload[z].value;
                         if ( summaryPromotionType == "message") {
                             $("#summary-offer-setup").append('<p>No offer setup.</p>');
