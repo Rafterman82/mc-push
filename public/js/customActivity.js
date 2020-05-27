@@ -191,6 +191,8 @@ define([
                 // hide control group field
                 $("#control_group_box").show();
 
+                $("#promotion_alert").hide();
+
                 if ( debug ) {
                     console.log("trigger step 1");   
                 }
@@ -212,6 +214,7 @@ define([
 
                 // hide control group field
                 $("#control_group_box").hide();
+                $("#promotion_alert").show();
 
                 if ( debug ) {
                     console.log("trigger step 2");   
