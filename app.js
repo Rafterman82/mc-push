@@ -440,12 +440,12 @@ const updateCommunicationCellIncrement = (key) => new Promise((resolve, reject) 
 	
 });
 
-const saveToCommunicationDataExtension = (payload, commCellIncrementData) => new Promise((resolve, reject) => {
+const saveToCommunicationDataExtension = (payload, key) => new Promise((resolve, reject) => {
 
 	console.dir("Payload:");
 	console.dir(payload);
-	console.dir("increment object:");
-	console.dir(commCellIncrementData);
+	console.dir("key:");
+	console.dir(key);
 
 	var insertPayload = [{
         "keys": {
