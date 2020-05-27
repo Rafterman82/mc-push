@@ -598,7 +598,7 @@ define([
                 }
 
                 var i;
-                if ( result.items.length ) {
+                if ( result.items ) {
                     for (i = 0; i < result.items.length; ++i) {
                         if ( debug ) {
                             console.log(result.items[i].keys);
