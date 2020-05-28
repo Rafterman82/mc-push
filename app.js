@@ -255,7 +255,7 @@ async function addQueryActivity(payload, seed) {
 
 		} else {
 			sourceDataModel = marketingCloud.partyCardDetailsTable;
-			appCardNumber = "PCD.LOYALTY_CARD_NUMBER";
+			appCardNumber = "PCD.APP_CARD_NUMBER";
 		}
 		var communicationQuery;
 		var memberOfferQuery;
