@@ -309,7 +309,7 @@ async function addQueryActivity(payload, seed) {
 		} else if ( payloadAttributes.push_type == 'offer' && payloadAttributes.offer_channel != '3' ) {
 
 			// this is legit promotion, use promo key and join for comm data NOT TESTED
-			communicationQuery = "SELECT bucket.PARTY_ID, cpa.communication_cell_id AS COMMUNICATION_CELL_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = '" + payloadAttributes.promotion_key + "' WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
+			communicationQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.communication_key AS COMMUNICATION_CELL_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "'";
 			console.dir(communicationQuery);
 
 		} else if ( payloadAttributes.push_type == 'offer' && payloadAttributes.offer_channel == '3') {
@@ -331,18 +331,57 @@ async function addQueryActivity(payload, seed) {
 
 			if ( payloadAttributes.offer_channel != "3" || payloadAttributes.offer_channel != 3 ) {
 
-				// this is a legit offer so we do an assigment
-				assignmentQuery = "SELECT bucket.PARTY_ID, cpa.MC_ID_1 AS MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = " + payloadAttributes.promotion_key + " WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' UNION SELECT bucket.PARTY_ID, cpa.MC_ID_6 AS MC_UNIQUE_PROMOTION_ID, GETDATE() as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = " + payloadAttributes.promotion_key + " WHERE cpa.promotionType = 'instore' OR cpa.promotionType = 'online_instore'";
-				console.dir(assignmentQuery);
+				if ( payloadAttributes.promotion_type == 'online') {
+					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_1 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
+					console.dir(assignmentQuery);
+				} else if (payloadAttributes.promotion_type == 'online_instore') {
+					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_1 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' UNION SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_6 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
+					console.dir(assignmentQuery);
+				} else if (payloadAttributes.promotion_type == 'instore') {
+					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_6 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
+					console.dir(assignmentQuery);
+				}
 
+				if ( payloadAttributes.promotion_type == 'online') {
+
+					if ( payloadAttributes.online_promotion_type == 'unique') {
+
+						// handle unique query
+						memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, (SELECT CouponCode FROM [" + payloadAttributes.unique_code_1 + "] AS VP WHERE (SELECT row_number() over (order by (select null))) = VP.RowNumber) AS VOUCHER_ON_LINE_CODE, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [START_DATE_TIME], CONCAT(MPT.offer_end_date, ' ', MPT.offer_end_time) AS [END_DATE_TIME], '1' AS NO_REDEMPTIONS_ALLOWED, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time)AS [VISIBLE_FROM_DATE_TIME], MPT.offer_status AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID";
+						console.dir(memberOfferQuery);
+					} else {
+
+						// handle global query
+						memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, MPT.offer_online_code_1 AS VOUCHER_ON_LINE_CODE, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [START_DATE_TIME], CONCAT(MPT.offer_end_date, ' ', MPT.offer_end_time) AS [END_DATE_TIME], '999' AS NO_REDEMPTIONS_ALLOWED, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [VISIBLE_FROM_DATE_TIME], MPT.offer_status AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID";
+						console.dir(memberOfferQuery);
+					}
+
+				} else if (payloadAttributes.promotion_type == 'online_instore') {
+
+					if ( payloadAttributes.online_promotion_type == 'unique') {
+
+						// handle unique query + instore code
+						memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, (SELECT CouponCode FROM [" + payloadAttributes.unique_code_1 + "] AS VP WHERE (SELECT row_number() over (order by (select null))) = VP.RowNumber) AS VOUCHER_ON_LINE_CODE, AS VOUCHER_ON_LINE_CODE, MPT.offer_instore_code_1 AS VOUCHER_IN_STORE_CODE, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [START_DATE_TIME], CONCAT(MPT.offer_end_date, ' ', MPT.offer_end_time) AS [END_DATE_TIME], '1' AS NO_REDEMPTIONS_ALLOWED, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [VISIBLE_FROM_DATE_TIME], MPT.offer_status AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID";
+						console.dir(memberOfferQuery);
+					
+					} else {
+
+						// handle global query + instore code
+						memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, MPT.offer_online_code_1 AS VOUCHER_ON_LINE_CODE, MPT.offer_instore_code_1 AS VOUCHER_IN_STORE_CODE, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [START_DATE_TIME], CONCAT(MPT.offer_end_date, ' ', MPT.offer_end_time) AS [END_DATE_TIME], '1' AS NO_REDEMPTIONS_ALLOWED, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [VISIBLE_FROM_DATE_TIME], MPT.offer_status AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID";
+						console.dir(memberOfferQuery);
+
+					}
+
+				} else if (payloadAttributes.promotion_type == 'instore') {
+
+					// handle instore code
+					memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, MPT.offer_instore_code_1 AS VOUCHER_IN_STORE_CODE, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [START_DATE_TIME], CONCAT(MPT.offer_end_date, ' ', MPT.offer_end_time) AS [END_DATE_TIME], MPT.offer_redemptions AS NO_REDEMPTIONS_ALLOWED, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [VISIBLE_FROM_DATE_TIME], MPT.offer_status AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID";
+					console.dir(memberOfferQuery);
+				}
 				// send the assignment query
 				assignmentQueryId = await sendQuery(marketingCloud.assignmentID, marketingCloud.assignmentKey, assignmentQuery, marketingCloud.assignmentTableName, "IF024 Assignment - " + dateString + " - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
 				await logQuery(assignmentQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 				returnIds["assignment_query_id"] = assignmentQueryId;
-
-				// we also need member offer query
-				memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, PT.instore_code_1 AS VOUCHER_IN_STORE_CODE, CASE WHEN PT.onlinePromotionType = 'unique' THEN PT.unique_code_1 WHEN PT.onlinePromotionType = 'global' THEN PT.global_code_1 END  AS VOUCHER_ON_LINE_CODE, PD.[VALID_FROM_DATETIME] AS [START_DATE_TIME], PD.VISIBLETO AS [END_DATE_TIME], PD.NUMBER_OF_REDEMPTIONS_ALLOWED AS NO_REDEMPTIONS_ALLOWED, PD.VISIBLEFROM AS [VISIBLE_FROM_DATE_TIME], 'A' AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' LEFT JOIN [" + marketingCloud.promotionTableName + "] as PT ON PT.promotion_key = MPT.offer_promotion INNER JOIN [" + marketingCloud.partyCardDetailsTable + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID LEFT JOIN [" + marketingCloud.promotionDescriptionTable + "] AS PD ON PD.MC_UNIQUE_PROMOTION_ID = PT.MC_ID_6";
-				console.dir(memberOfferQuery);	
 
 			} else {
 
