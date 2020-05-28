@@ -241,8 +241,15 @@ async function addQueryActivity(payload, seed) {
 
 		}
 
-		const communicationQuery = "SELECT bucket.PARTY_ID, CASE WHEN MPT.push_type = 'message' THEN MPT.communication_key WHEN MPT.push_type = 'offer' THEN cpa.communication_cell_id END AS COMMUNICATION_CELL_ID, CASE WHEN MPT.push_type = 'message' THEN CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) WHEN MPT.push_type = 'offer' THEN CONCAT(MPT.offer_send_date, ' ', MPT.offer_send_time) END AS CONTACT_DATE FROM [" + payloadAttributes.update_contact + " as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.promotion_key + "' LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = '" + payloadAttributes.promotion_key + "' WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
-		console.dir(communicationQuery);		
+		if ( payloadAttributes.push_type == 'message' ) {
+			const communicationQuery = "SELECT bucket.PARTY_ID, MPT.communication_key AS COMMUNICATION_CELL_ID, CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS CONTACT_DATE FROM [" + payloadAttributes.update_contact + " as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "'";
+			console.dir(communicationQuery);		
+		} else {
+			const communicationQuery = "SELECT bucket.PARTY_ID, cpa.communication_cell_id AS COMMUNICATION_CELL_ID, CONCAT(MPT.offer_send_date, ' ', MPT.offer_send_time) as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = '" + payloadAttributes.promotion_key + "' WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
+			console.dir(communicationQuery);
+		}
+
+
 
 		const communicationQueryId = await sendQuery(marketingCloud.communicationHistoryID, marketingCloud.communicationHistoryKey, communicationQuery, marketingCloud.communicationTableName, "IF028 - Communication History - " + dateString + " - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
 		await logQuery(communicationQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
