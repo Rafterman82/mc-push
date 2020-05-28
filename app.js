@@ -116,6 +116,7 @@ async function definePayloadAttributes(payload, seed) {
 	var automationRunTime;
 	var automationReoccuring;
 	var setAutomationState = false;
+	var communicationKey;
 	
 	try {
 		for ( t = 0; t < payload.length; t++ ) {
@@ -240,8 +241,8 @@ async function addQueryActivity(payload, seed) {
 
 		}
 
-		const communicationQuery = "SELECT bucket.PARTY_ID, cpa.communication_cell_id AS COMMUNICATION_CELL_ID, GETDATE() as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = '" + payloadAttributes.promotion_key + "' WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
-		console.dir(communicationQuery);
+		const communicationQuery = "SELECT bucket.PARTY_ID, CASE WHEN MPT.push_type = 'message' THEN MPT.communication_key WHEN MPT.push_type = 'offer' THEN cpa.communication_cell_id END AS COMMUNICATION_CELL_ID, CASE WHEN MPT.push_type = 'message' THEN CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) WHEN MPT.push_type = 'offer' THEN CONCAT(MPT.offer_send_date, ' ', MPT.offer_send_time) END AS CONTACT_DATE FROM [" + payloadAttributes.update_contact + " as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.promotion_key + "' LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = '" + payloadAttributes.promotion_key + "' WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
+		console.dir(communicationQuery);		
 
 		const communicationQueryId = await sendQuery(marketingCloud.communicationHistoryID, marketingCloud.communicationHistoryKey, communicationQuery, marketingCloud.communicationTableName, "IF028 - Communication History - " + dateString + " - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
 		await logQuery(communicationQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
@@ -530,7 +531,7 @@ async function buildAndSend(payload) {
 		const commPayload = await buildCommPayload(payload);
 		const commObject = await saveToCommunicationDataExtension(commPayload, commCellIncrementData.communication_cell_code_id_increment);
 
-		const pushPayload = await buildPushPayload(payload);
+		const pushPayload = await buildPushPayload(payload, commCellIncrementData.communication_cell_code_id_increment);
 		const pushObject = await saveToDataExtension(pushPayload, incrementData);
 
 		await updateIncrements(incrementData);
@@ -542,13 +543,18 @@ async function buildAndSend(payload) {
 	}
 }
 
-function buildPushPayload(payload) {
+function buildPushPayload(payload, commCellKey) {
 	var mobilePushData = {};
 	for ( var i = 0; i < payload.length; i++ ) {
 		//console.dir("Step is: " + payload[i].step + ", Key is: " + payload[i].key + ", Value is: " + payload[i].value + ", Type is: " + payload[i].type);
 		mobilePushData[payload[i].key] = payload[i].value;
 
 	}
+	if ( mobilePushData["push_type"] == 'message' ) {
+		mobilePushData["communication_key"] = commCellKey;
+		mobilePushData["communication_control_key"] = parseInt(commCellKey) + 1;		
+	}
+
 	console.dir("building push payload")
 	console.dir(mobilePushData);
 
@@ -587,6 +593,7 @@ function buildCommPayload(payload) {
 async function sendBackPayload(payload) {
 	try {
 		const getIncrementsForSendback = await getIncrements();
+		const getCommCellForSendback =  await getCommCellIncrements();
 		var sendBackPromotionKey = parseInt(getIncrementsForSendback.increment);
 		const fullAssociationPayload = await buildAndSend(payload);
 		return sendBackPromotionKey;
