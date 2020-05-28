@@ -45,7 +45,7 @@
                     <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
                 </svg>
             </span>
-            <h2>Please ensure you have setup a valid App offer in the promotion widget before proceeding.
+            <h2>Please ensure you have setup a valid App offer in the promotion widget before proceeding. Unless you intend on sending a informational offer.
             </h2>
         </div>
         <div id="step0alert" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
@@ -134,7 +134,7 @@
                     <fieldset class="slds-form-element slds-form-element_stacked">
                         <legend class="slds-form-element__legend slds-form-element__label">Control Group Data Extension Name</legend>
                         <div class="slds-form-element sfmc-input">
-                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Control Group</label>
+                            <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">This is only required for messages and informational offers. In all other cases it is pulled from the promotion</label>
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                     <select class="slds-select" id="control_group">
@@ -599,6 +599,44 @@
                                     </div>
                                 </div>
                             </div>
+                    <div class="slds-box slds-box_xx-small slds-m-vertical_xx-small" id="offer_cell_box">
+                    <h2>Communication History Data - This is required for an informational send.</h2>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Cell Code</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="offer_cell_code" placeholder="Cell Code (e.g some-cell-code)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__cell_code">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Cell Name</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="offer_cell_name" placeholder="Cell Name (e.g some-cell-name)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__cell_name">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Campaign Name</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="offer_campaign_name" placeholder="Campaign Name (e.g some-campaign-name)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__campaign_name">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Campaign ID</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="int" data-attribute-length="30" id="offer_campaign_id" placeholder="Campaign ID (e.g 12345)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__campaign_id">This field is required</div>
+                    </div>
+                    <div class="slds-form-element sfmc-input">
+                        <label class="slds-form-element__label" for="tooltip-showing-form-element-help-01">Campaign Code</label>
+                        <div class="slds-form-element__control">
+                            <input data-attribute-type="varchar" data-attribute-length="30" type="text" id="offer_campaign_code" placeholder="Campaign Code (e.g some-campaign-code)" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__help" id="form-error__campaign_code">This field is required</div>
+                    </div>
+                </div>
                         </div>
                     </div>
                 </div>                

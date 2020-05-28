@@ -213,7 +213,7 @@ define([
             } else if ( pushType === 'offer' ) {
 
                 // hide control group field
-                $("#control_group_box").hide();
+                //$("#control_group_box").hide();
                 $("#promotion_alert").show();
 
                 if ( debug ) {
@@ -232,6 +232,26 @@ define([
                 }
 
                 connection.trigger('updateSteps', steps);
+            }
+
+        });
+
+        // render relevant steps based on input
+        $('offer_channel').click(function() {
+
+            if ( $("#offer_channel").value == '3' || $("#offer_channel").value == 3) {
+                // informational, show cell code and de-couple from promotion widget
+                $("#offer_cell_box").show();
+
+                // hide promotion dropdown
+                $("#offer_promotion").hide();
+
+            } else {
+
+                $("#offer_cell_box").show();
+                // show offer promotion
+                $("#offer_promotion").show();
+
             }
 
         });
