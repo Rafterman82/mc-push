@@ -125,6 +125,8 @@ async function definePayloadAttributes(payload, seed) {
 	try {
 		for ( t = 0; t < payload.length; t++ ) {
 
+			console.dir("The payload key is: " + payload[t].key + " and the payload value is: " + payload[t].value);
+
 			if ( payload[t].key == "message_key_hidden") {
 				messageKeySaved = payload[t].value;
 			} else if ( payload[t].key == "control_group") {
