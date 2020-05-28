@@ -129,7 +129,7 @@ async function definePayloadAttributes(payload, seed) {
 				updateContactDE = payload[t].value;
 			} else if ( payload[t].key == "widget_name") {
 				automationName = payload[t].value;
-			} else if ( payload[t].key == "pushType") {
+			} else if ( payload[t].key == "push_type") {
 				pushType = payload[t].value;
 			} else if ( payload[t].key == "offer_promotion" && payload[t].value != "no-code" ) {
 				promotionKey = payload[t].value;
