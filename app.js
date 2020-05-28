@@ -415,7 +415,7 @@ const updateCommunicationCellIncrement = (key) => new Promise((resolve, reject) 
             "increment_key": 1
         },
         "values": {
-        	"communication_cell_code_id_increment": parseInt(key + 3)
+        	"communication_cell_code_id_increment": parseInt(key) + 3)
         }
 	}];
 		
