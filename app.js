@@ -153,7 +153,7 @@ async function definePayloadAttributes(payload, seed) {
 			control_group: decodeURI(controlGroupDE), 
 			update_contact: decodeURI(updateContactDE), 
 			query_name: automationName,
-			push_type: pushType,
+			push_type: push_type,
 			promotion_key: promotionKey,
 			query_date: automationRunDate + " " + automationRunTime,
 			query_reoccuring: setAutomationState
