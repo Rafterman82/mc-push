@@ -565,7 +565,8 @@ function buildCommPayload(payload) {
 		        "campaign_code"				: payload["campaign_code"],
 		        "cell_type"					: "1",
 		        "channel"					: payload["channel"],
-		        "is_putput_flag"			: "1"				
+		        "is_putput_flag"			: "1",
+		        "sent"						: true			
 			},
 			"control": {
 		    	"cell_code"					: payload["cell_code"],
@@ -575,7 +576,8 @@ function buildCommPayload(payload) {
 		        "campaign_code"				: payload["campaign_code"],
 		        "cell_type"					: "2",
 		        "channel"					: payload["channel"],
-		        "is_putput_flag"			: "0"				
+		        "is_putput_flag"			: "0",
+		        "sent"						: true				
 			}
 	};
 	console.dir(communicationCellData);
