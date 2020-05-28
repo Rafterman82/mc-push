@@ -121,6 +121,17 @@ async function definePayloadAttributes(payload, seed) {
 	var setAutomationState = false;
 	var communicationKey;
 	var offerChannel;
+	var promotionType;
+	var onlinePromotionType;
+	var onlineCode1;
+	var instoreCode1;
+	var uniqueCode1;
+	var mc1;
+	var mc6;
+	var cellKey;
+	var controlKey;
+	var communicationKey;
+	var communicationKeyControl;
 	
 	try {
 		for ( t = 0; t < payload.length; t++ ) {
@@ -147,6 +158,24 @@ async function definePayloadAttributes(payload, seed) {
 				automationReoccuring = payload[t].value;
 			} else if ( payload[t].key == 'offer_channel' ) {
 				offerChannel = payload[t].value;
+			} else if ( payload[t].key == 'offer_promotion_type') {
+				promotionType = payload[t].value;
+			} else if ( payload[t].key == 'offer_online_promotion_type') {
+				onlinePromotionType = payload[t].value;
+			} else if ( payload[t].key == 'offer_online_code_1') {
+				onlineCode1 = payload[t].value;
+			} else if ( payload[t].key == 'offer_instore_code_1') {
+				instoreCode1 = payload[t].value;
+			} else if ( payload[t].key == 'offer_unique_code_1') {
+				uniqueCode1 = payload[t].value;
+			} else if (payload[t].key == 'offer_mc_1') {
+				mc1 = payload[t].value;
+			} else if (payload[t].key == 'offer_mc_6') {
+				mc6 = payload[t].value;
+			} else if (payload[t].key == 'communication_key') {
+				communicationKey = payload[t].value;
+			} else if (payload[t].key == 'communication_key_control') {
+				communicationKeyControl = payload[t].value;
 			}
 		}
 
@@ -165,7 +194,16 @@ async function definePayloadAttributes(payload, seed) {
 			promotion_key: promotionKey,
 			query_date: automationRunDate + " " + automationRunTime,
 			query_reoccuring: setAutomationState,
-			offer_channel: offerChannel
+			offer_channel: offerChannel,
+			promotion_type: promotionType,
+			online_promotion_type: onlinePromotionType,
+			instore_code_1: instoreCode1,
+			online_code_1: onlineCode1,
+			unique_code_1: uniqueCode1,
+			mc_1: mc1,
+			mc_6: mc6,
+			communication_key: communicationKey,
+			communication_key_control: communicationKeyControl
 		};
 
 		console.dir("The attributes return is");
