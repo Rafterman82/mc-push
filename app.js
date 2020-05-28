@@ -145,8 +145,8 @@ async function definePayloadAttributes(payload, seed) {
 				automationRunDate = payload[t].value;
 			} else if ( payload[t].key == "automation_reoccuring" ) {
 				automationReoccuring = payload[t].value;
-			} else if ( payload[t].key == "offer_channel") {
-				offerChannel == payload[t].value;
+			} else if ( payload[t].key == 'offer_channel' ) {
+				offerChannel = payload[t].value;
 			}
 		}
 
