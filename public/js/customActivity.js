@@ -263,6 +263,8 @@ define([
             $("#offer_online_code_1").val($("option:selected", this).attr("data-attribute-online-code"));
             $("#offer_instore_code_1").val($("option:selected", this).attr("data-attribute-instore-code"));
             $("#offer_unique_code_1").val($("option:selected", this).attr("data-attribute-voucher-pot"));
+            $("#offer_mc_id_1").val($("option:selected", this).attr("data-attribute-mc1"));
+            $("#offer_mc_id_6").val($("option:selected", this).attr("data-attribute-mc6"));
         });
 
         // hide the tool tips on page load
@@ -642,7 +644,7 @@ define([
                             console.log(result.items[i].keys);
                         }
                         // do something with `substr[i]
-                        $(".offer_promotion").append("<option data-attribute-instore-code=" + result.items[i].values.instore_code_1 + " data-attribute-online-code=" + result.items[i].values.online_code_1 + " data-attribute-online-promotion-type=" + result.items[i].values.onlinepromotiontype + " data-attribute-promotion-type=" + result.items[i].values.promotiontype + " data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
+                        $(".offer_promotion").append("<option data-attribute-mc6=" + result.items[i].values.mc_id_6 + " data-attribute-mc1=" + result.items[i].values.mc_id_1 + " data-attribute-instore-code=" + result.items[i].values.instore_code_1 + " data-attribute-online-code=" + result.items[i].values.online_code_1 + " data-attribute-online-promotion-type=" + result.items[i].values.onlinepromotiontype + " data-attribute-promotion-type=" + result.items[i].values.promotiontype + " data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
                     }                   
                 }
 
