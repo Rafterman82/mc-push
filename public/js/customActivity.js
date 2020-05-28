@@ -256,6 +256,15 @@ define([
 
         });
 
+        $('#offer_promotion').change(function() {
+            // get data attributes from dd and prepop hidden fields
+            $("#offer_promotion_type").val($("option:selected", this).attr("data-attribute-promotion-type"));
+            $("#offer_online_promotion_type").val($("option:selected", this).attr("data-attribute-online-promotion-type"));
+            $("#offer_online_code_1").val($("option:selected", this).attr("data-attribute-online-code"));
+            $("#offer_instore_code_1").val($("option:selected", this).attr("data-attribute-instore-code"));
+            $("#offer_unique_code_1").val($("option:selected", this).attr("data-attribute-voucher-pot"));
+        });
+
         // hide the tool tips on page load
         $('.slds-popover_tooltip').hide();
 
@@ -633,7 +642,7 @@ define([
                             console.log(result.items[i].keys);
                         }
                         // do something with `substr[i]
-                        $(".offer_promotion").append("<option data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
+                        $(".offer_promotion").append("<option data-attribute-instore-code=" + result.items[i].values.instore_code_1 + " data-attribute-online-code=" + result.items[i].values.online_code_1 + " data-attribute-online-promotion-type=" + result.items[i].values.onlinepromotiontype + " data-attribute-promotion-type=" + result.items[i].values.promotiontype + " data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
                     }                   
                 }
 

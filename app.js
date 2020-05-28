@@ -308,7 +308,7 @@ async function addQueryActivity(payload, seed) {
 
 			} else {
 
-				// same here we need member offer but not assignment as this is informational
+				// same here we need member offer but not assignment as this is informational TESTED
 				memberOfferQuery = "SELECT 'Matalan' AS SCHEME_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.offer_id AS OFFER_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [START_DATE_TIME], CONCAT(MPT.offer_end_date, ' ', MPT.offer_end_time) AS [END_DATE_TIME], '0' AS NO_REDEMPTIONS_ALLOWED, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) AS [VISIBLE_FROM_DATE_TIME], MPT.offer_status AS STATUS FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID";
 				console.dir(memberOfferQuery);			
 
@@ -322,6 +322,7 @@ async function addQueryActivity(payload, seed) {
 		
 		} else if ( payloadAttributes.push_type == "message" ) {
 
+			// message query TESTED
 			messageQuery = "SELECT 'Matalan' AS SCHEME_ID, (cast(DATEDIFF(SS,'2020-01-01',getdate()) as bigint) * 100000) + row_number() over (order by (select null)) AS MOBILE_MESSAGE_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.message_content AS MESSAGE_CONTENT, CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, MPT.message_status AS STATUS, MPT.message_short_content AS SHORT_MESSAGE_CONTENT FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] as MPT ON MPT.push_key = " + payloadAttributes.key + "";
 			console.dir(messageQuery);
 			const messageQueryId = await sendQuery(marketingCloud.messageID, marketingCloud.messageKey, messageQuery, marketingCloud.messageTableName, "IF008 Message - " + dateString + " - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
