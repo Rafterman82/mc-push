@@ -239,7 +239,7 @@ define([
         // render relevant steps based on input
         $('offer_channel').click(function() {
 
-            if ( $("#offer_channel").value == '3' || $("#offer_channel").value == 3) {
+            if ( $("#offer_channel").val() == '3' || $("#offer_channel").val() == 3) {
                 // informational, show cell code and de-couple from promotion widget
                 $("#offer_cell_box").show();
 
