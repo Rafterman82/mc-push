@@ -242,11 +242,11 @@ async function addQueryActivity(payload, seed) {
 			payloadAttributes.update_contact = marketingCloud.seedListTable;
 			payloadAttributes.query_name = payloadAttributes.query_name + " - SEEDLIST";
 			sourceDataModel = marketingCloud.seedListTable;
-			appCardNumber = "MATALAN_CARD_NUMBER";
+			appCardNumber = "PCD.MATALAN_CARD_NUMBER";
 
 		} else {
 			sourceDataModel = marketingCloud.partyCardDetailsTable;
-			appCardNumber = "LOYALTY_CARD_NUMBER";
+			appCardNumber = "PCD.LOYALTY_CARD_NUMBER";
 		}
 		var communicationQuery;
 
