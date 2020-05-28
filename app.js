@@ -105,6 +105,9 @@ const getOauth2Token = () => new Promise((resolve, reject) => {
 
 async function definePayloadAttributes(payload, seed) {
 
+	console.dir("Payload passed to attributes function is:");
+	console.dir(payload);
+
 	var t = 0;
 	var promotionKey;
 	var updateContactDE;
@@ -256,19 +259,21 @@ async function addQueryActivity(payload, seed) {
 
 		if ( payloadAttributes.push_type == 'message' ) {
 
-			// message data comes from message page
+			// message data comes from message page TESTED
 			communicationQuery = "SELECT bucket.PARTY_ID, MPT.communication_key AS COMMUNICATION_CELL_ID, CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "'";
 			console.dir(communicationQuery);
 
 		} else if ( payloadAttributes.push_type == 'offer' && payloadAttributes.offer_channel != '3' ) {
 
-			// this is legit promotion, use promo key and join for comm data
+			// this is legit promotion, use promo key and join for comm data NOT TESTED
 			communicationQuery = "SELECT bucket.PARTY_ID, cpa.communication_cell_id AS COMMUNICATION_CELL_ID, CONCAT(MPT.offer_send_date, ' ', MPT.offer_send_time) as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.promotionTableName + "] as cpa ON cpa.promotion_key = '" + payloadAttributes.promotion_key + "' WHERE cpa.promotionType = 'online' OR cpa.promotionType = 'online_instore' OR cpa.promotionType = 'instore'";
 			console.dir(communicationQuery);
 
 		} else if ( payloadAttributes.push_type == 'offer' && payloadAttributes.offer_channel == '3') {
 
 			// this is informational, comm cell should come from offer page
+			communicationQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.communication_key AS COMMUNICATION_CELL_ID, CONCAT(MPT.offer_send_date, ' ', MPT.offer_send_time) as CONTACT_DATE FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "'";
+			console.dir(communicationQuery);
 		}
 
 
@@ -597,7 +602,7 @@ function buildPushPayload(payload, commCellKey) {
 		mobilePushData[payload[i].key] = payload[i].value;
 
 	}
-	if ( mobilePushData["push_type"] == 'message' ) {
+	if ( mobilePushData["push_type"] == 'message' || mobilePushData["push_type"] == 'offer' && mobilePushData["offer_channel"] == '3' ) {
 		mobilePushData["communication_key"] = commCellKey;
 		mobilePushData["communication_control_key"] = parseInt(commCellKey) + 1;		
 	}
