@@ -117,6 +117,7 @@ async function definePayloadAttributes(payload, seed) {
 	var automationReoccuring;
 	var setAutomationState = false;
 	var communicationKey;
+	var offerChannel;
 	
 	try {
 		for ( t = 0; t < payload.length; t++ ) {

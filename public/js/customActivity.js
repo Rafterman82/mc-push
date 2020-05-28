@@ -244,13 +244,13 @@ define([
                 $("#offer_cell_box").show();
 
                 // hide promotion dropdown
-                $("#offer_promotion").hide();
+                $("#promotion_element").hide();
 
             } else {
 
                 $("#offer_cell_box").hide();
                 // show offer promotion
-                $("#offer_promotion").show();
+                $("#promotion_element").show();
 
             }
 
