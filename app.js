@@ -235,10 +235,18 @@ async function addQueryActivity(payload, seed) {
 		console.dir("The Payload Attributes type is");
 		console.dir(payloadAttributes.push_type);
 
+		var sourceDataModel;
+		var appCardNumber;
+
 		if ( seed ) {
 			payloadAttributes.update_contact = marketingCloud.seedListTable;
 			payloadAttributes.query_name = payloadAttributes.query_name + " - SEEDLIST";
+			sourceDataModel = marketingCloud.seedListTable;
+			appCardNumber = "MATALAN_CARD_NUMBER";
 
+		} else {
+			sourceDataModel = marketingCloud.partyCardDetailsTable;
+			appCardNumber = "LOYALTY_CARD_NUMBER";
 		}
 		var communicationQuery;
 
@@ -273,7 +281,7 @@ async function addQueryActivity(payload, seed) {
 		
 		} else if ( payloadAttributes.push_type == "message" ) {
 
-			const messageQuery = "SELECT 'Matalan' AS SCHEME_ID, (cast(DATEDIFF(SS,'2020-01-01',getdate()) as bigint) * 100000) + row_number() over (order by (select null)) AS MOBILE_MESSAGE_ID, PCD.APP_CARD_NUMBER AS LOYALTY_CARD_NUMBER, MPT.message_content AS MESSAGE_CONTENT, CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, 'A' AS STATUS, MPT.message_short_content AS SHORT_MESSAGE_CONTENT FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE INNER JOIN [" + marketingCloud.partyCardDetailsTable + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] as MPT ON MPT.push_key = " + payloadAttributes.key + "";
+			const messageQuery = "SELECT 'Matalan' AS SCHEME_ID, (cast(DATEDIFF(SS,'2020-01-01',getdate()) as bigint) * 100000) + row_number() over (order by (select null)) AS MOBILE_MESSAGE_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.message_content AS MESSAGE_CONTENT, CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, MPT.message_status AS STATUS, MPT.message_short_content AS SHORT_MESSAGE_CONTENT FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] as MPT ON MPT.push_key = " + payloadAttributes.key + "";
 			console.dir(messageQuery);
 			const messageQueryId = await sendQuery(marketingCloud.messageID, marketingCloud.messageKey, messageQuery, marketingCloud.messageTableName, "IF008 Message - " + dateString + " - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
 			await logQuery(messageQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
