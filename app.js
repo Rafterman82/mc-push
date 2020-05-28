@@ -332,13 +332,13 @@ async function addQueryActivity(payload, seed) {
 			if ( payloadAttributes.offer_channel != "3" || payloadAttributes.offer_channel != 3 ) {
 
 				if ( payloadAttributes.promotion_type == 'online') {
-					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_1 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
+					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.offer_mc_id_1 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
 					console.dir(assignmentQuery);
 				} else if (payloadAttributes.promotion_type == 'online_instore') {
-					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_1 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' UNION SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_6 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
+					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.offer_mc_id_1 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' UNION SELECT bucket.PARTY_ID AS PARTY_ID, MPT.offer_mc_id_6 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
 					console.dir(assignmentQuery);
 				} else if (payloadAttributes.promotion_type == 'instore') {
-					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.mc_6 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
+					assignmentQuery = "SELECT bucket.PARTY_ID AS PARTY_ID, MPT.offer_mc_id_6 AS MC_UNIQUE_PROMOTION_ID, CONCAT(MPT.offer_start_date, ' ', MPT.offer_start_time) as ASSIGNMENT_DATETIME FROM [" + payloadAttributes.update_contact + "] as bucket LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] AS MPT ON MPT.push_key = '" + payloadAttributes.key + "' ";
 					console.dir(assignmentQuery);
 				}
 
