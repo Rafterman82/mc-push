@@ -532,13 +532,16 @@ define([
 
                 if ( !$(step2Selectors[m]).val() ) {
 
-                    //step2ErrorCount++;
+                    step2ErrorCount++;
                 }
             }
 
 
 
             var selectedChannel = $("#offer_channel").val();
+
+            console.log("Channel value is");
+            console.log(selectedChannel);
 
             if ( selectedChannel == '3') {
 
