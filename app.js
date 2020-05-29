@@ -730,11 +730,11 @@ async function buildAndSend(payload) {
 		const incrementData = await getIncrements();
 		const commCellIncrementData = await getCommCellIncrements();
 
-		const commPayload = await buildCommPayload(payload);
-		const commObject = await saveToCommunicationDataExtension(commPayload, commCellIncrementData.communication_cell_code_id_increment);
-
 		const pushPayload = await buildPushPayload(payload, commCellIncrementData.communication_cell_code_id_increment);
 		const pushObject = await saveToDataExtension(pushPayload, incrementData);
+
+		const commPayload = await buildCommPayload(pushPayload);
+		const commObject = await saveToCommunicationDataExtension(commPayload, commCellIncrementData.communication_cell_code_id_increment);
 
 		await updateIncrements(incrementData);
 		await updateCommunicationCellIncrement(commCellIncrementData.communication_cell_code_id_increment);
@@ -779,7 +779,8 @@ function updatePushPayload(payload) {
 	return mobilePushData;
 }
 
-function buildCommPayload(payload) {
+function buildCommPayload(payload, type) {
+
 	var communicationCellData = {
 			"not_control": {
 		    	"cell_code"					: payload["cell_code"],
