@@ -105,11 +105,19 @@ define([
             for ( r = 0; r < argumentsSummaryPayload.buildPayload.length; r++ ) {
                 if ( argumentsSummaryPayload.buildPayload[r].key == "push_type" ) {
                     argPromotionType = argumentsSummaryPayload.buildPayload[r].value; 
-                } else if ( argumentsSummaryPayload.buildPayload[r].key == "promotion_key_hidden" ) {
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "message_key_hidden" && argumentsSummaryPayload.buildPayload[r].value ) {
                     argKey = argumentsSummaryPayload.buildPayload[r].value;
-                    $("#promotion_key_hidden").val(argKey);
-                    $("#control_action_optima").html("Data has been sent");
-                    $("#control_action_optima").prop('disabled', true);                    
+                    $("#message_key_hidden").val(argKey);
+                    $("#control_action_save").html("Data has been sent");
+                    $("#control_action_save").prop('disabled', true);                    
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "seed_sent" && argumentsSummaryPayload.buildPayload[r].value ) {
+                    $("#control_action_seed").html("Automation Created");
+                    $("#control_action_seed").prop('disabled', true); 
+
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "automation_sent" && argumentsSummaryPayload.buildPayload[r].value ) {
+                    $("#control_action_create").html("Automation Created");
+                    $("#control_action_create").prop('disabled', true); 
+
                 }
             }
 
@@ -121,6 +129,7 @@ define([
 
             // trigger steps
             triggerSteps(argumentsSummaryPayload.buildPayload, argPromotionType);
+
 
         }      
     }
@@ -541,7 +550,7 @@ define([
                 if ( $("#offer_promotion").val() == 'no-code') {
 
                     step2ErrorCount++;
-                    
+
                 }
 
             }
@@ -1078,10 +1087,9 @@ define([
                 success: function(data) {
                     console.log('success');
                     console.log(data);
-                    $("#seed_query_key_hidden").val(data);
-                    $("#main_setup_seed_query_id").html(data);
                     $("#control_action_seed").html("Automation Created");
                     $("#control_action_seed").prop('disabled', true);
+                    $("#seed_sent").val(true);
                 }
                 , error: function(jqXHR, textStatus, err){
                     if ( debug ) {
