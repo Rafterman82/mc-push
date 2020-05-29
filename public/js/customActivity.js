@@ -638,68 +638,6 @@ define([
             return false;
         }
     }
-/**
-    function validateSingleField(element) {
-
-        // your code
-        console.log($(element).val());
-        console.log($(element).attr("data-attribute-length"));
-        console.log($(element).attr("data-attribute-type"));
-
-        var elementValue = $(element).val();
-        var elementId = $(element).attr('id');
-        var elementLength = $(element).attr("data-attribute-length");
-        var elementType = $(element).attr("data-attribute-type");
-
-        if ( elementId == "promotion_id_1" ) {
-
-            $("#promotion_group_id_online").val(elementValue);
-
-        } else if ( elementId == "promotion_id_6" ) {
-
-            $("#promotion_group_id_instore").val(elementValue);
-
-        }
-
-        if ( elementType == 'int' ) {
-
-            // value must be number
-            if ( !isWholeNumber(elementValue) && elementValue <= 0 && elementValue.length <= elementLength) {
-
-                $(element).parents().eq(1).addClass("slds-has-error");
-                $("#form-error__" + elementId).html("This value must be a number. Less than 30 digits and cannot be empty");
-                $("#form-error__" + elementId).show();
-
-            } else {
-
-                console.log("hiding error");
-                $("#form-error__" + elementId).hide();
-                $(element).parents().eq(1).removeClass("slds-has-error");
-
-            }
-
-        } else if ( elementType == 'varchar' ) {
-
-            // value must be varchar
-            if ( elementValue.length >= elementLength || isEmpty(elementValue) ) {
-
-                console.log("value is empty or greater than required length")
-                // value must be less than length
-                $(element).parents().eq(1).addClass("slds-has-error");
-                $("#form-error__" + elementId).html("Value must be less than " + elementLength +" characters and cannot be empty");
-                $("#form-error__" + elementId).show();
-            
-            } else {
-
-                console.log("hiding error");
-                $("#form-error__" + elementId).hide();
-                $(element).parents().eq(1).removeClass("slds-has-error");
-
-            }
-
-        }
-
-    } **/
 
 
     function isEmpty (value) {
@@ -1148,7 +1086,7 @@ define([
             console.log("Data Object to be saved is: ");
             console.log(payloadToSave);
         }
-/**
+
         try {
             $.ajax({ 
                 url: '/dataextension/update',
@@ -1172,7 +1110,7 @@ define([
         } catch(e) {
             console.log("Error saving data");
             console.log(e);
-        }**/
+        }
 
     }
 

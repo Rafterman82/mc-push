@@ -674,6 +674,56 @@ const saveToDataExtension = (pushPayload, incrementData) => new Promise((resolve
 	
 });
 
+const updateDataExtension = (updatedPushPayload, existingKey) => new Promise((resolve, reject) => {
+
+	console.dir("Payload:");
+	console.dir(updatedPushPayload);
+	console.dir("Current Key:");
+	console.dir(existingKey);
+
+
+	var insertPayload = [{
+        "keys": {
+            "push_key": parseInt(existingKey)
+        },
+        "values": updatedPushPayload
+	}];
+	
+	console.dir(insertPayload);
+
+	getOauth2Token().then((tokenResponse) => {
+	   	axios({
+			method: 'post',
+			url: insertUrl,
+			headers: {'Authorization': tokenResponse},
+			data: insertPayload
+		})
+		.then(function (response) {
+			console.dir(response.data);
+			return resolve(response.data);
+		})
+		.catch(function (error) {
+			console.dir(error);
+			return reject(error);
+		});
+	})	
+	
+});
+
+
+async function buildAndUpdate(payload, key) {
+	try {
+
+		const updatedPushPayload = await updatePushPayload(payload);
+		const updatedPushObject = await updateDataExtension(updatedPushPayload, key);
+
+		return updatedPushPayload;
+
+	} catch(err) {
+
+		console.dir(err);
+	}
+}
 
 async function buildAndSend(payload) {
 	try {
@@ -706,6 +756,22 @@ function buildPushPayload(payload, commCellKey) {
 		mobilePushData["communication_key"] = commCellKey;
 		mobilePushData["communication_control_key"] = parseInt(commCellKey) + 1;		
 	}
+
+	console.dir("building push payload")
+	console.dir(mobilePushData);
+
+	return mobilePushData;
+}
+
+function updatePushPayload(payload) {
+	var mobilePushData = {};
+	for ( var i = 0; i < payload.length; i++ ) {
+		//console.dir("Step is: " + payload[i].step + ", Key is: " + payload[i].key + ", Value is: " + payload[i].value + ", Type is: " + payload[i].type);
+		mobilePushData[payload[i].key] = payload[i].value;
+
+	}
+
+	delete mobilePushData.message_key_hidden;
 
 	console.dir("building push payload")
 	console.dir(mobilePushData);
@@ -749,6 +815,25 @@ async function sendBackPayload(payload) {
 		var sendBackPromotionKey = parseInt(getIncrementsForSendback.increment);
 		const fullAssociationPayload = await buildAndSend(payload);
 		return sendBackPromotionKey;
+	} catch(err) {
+		console.dir(err);
+	}
+
+}
+
+async function sendBackUpdatedPayload(payload) {
+
+	var messageKeyToUpdate;
+	var h;
+	for ( h = 0; h < payload.length; h++ ) {
+		if ( payload[h].key == 'message_key_hidden' ) {
+
+			messageKeyToUpdate = payload[h].value;
+		}
+	}
+	try {
+		const fullAssociationPayload = await buildAndUpdate(payload);
+		return messageKeyToUpdate;
 	} catch(err) {
 		console.dir(err);
 	}
@@ -824,6 +909,18 @@ app.post('/dataextension/add/', async function (req, res){
 	try {
 		const returnedPayload = await sendBackPayload(req.body)
 		res.send(JSON.stringify(returnedPayload));
+	} catch(err) {
+		console.dir(err);
+	}
+});
+
+// insert data into data extension
+app.post('/dataextension/update/', async function (req, res){ 
+	console.dir("Dump request body");
+	console.dir(req.body);
+	try {
+		const returnedUpdatePayload = await sendBackUpdatedPayload(req.body)
+		res.send(JSON.stringify(returnedpdatePayload));
 	} catch(err) {
 		console.dir(err);
 	}
