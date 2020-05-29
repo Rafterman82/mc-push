@@ -622,14 +622,14 @@ define([
         console.log(dateStringAsArray.length);
 
         // is char 4 a - and char 7 a - and is char 9 true or false
-        if ( dateStringAsArray.length == 10 || dateStringAsArray[4] == "-" || dateStringAsArray[7] == "-" ) {
-            if (isCharInteger(dateStringAsArray[0]) || 
-                isCharInteger(dateStringAsArray[1]) || 
-                isCharInteger(dateStringAsArray[2]) || 
-                isCharInteger(dateStringAsArray[3]) || 
-                isCharInteger(dateStringAsArray[5]) || 
-                isCharInteger(dateStringAsArray[6]) || 
-                isCharInteger(dateStringAsArray[8]) || 
+        if ( dateStringAsArray.length == 10 && dateStringAsArray[4] == "-" && dateStringAsArray[7] == "-" ) {
+            if (isCharInteger(dateStringAsArray[0]) && 
+                isCharInteger(dateStringAsArray[1]) && 
+                isCharInteger(dateStringAsArray[2]) && 
+                isCharInteger(dateStringAsArray[3]) && 
+                isCharInteger(dateStringAsArray[5]) && 
+                isCharInteger(dateStringAsArray[6]) && 
+                isCharInteger(dateStringAsArray[8]) && 
                 isCharInteger(dateStringAsArray[9]) 
                 ) {
                 return true;
