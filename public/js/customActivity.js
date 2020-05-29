@@ -474,13 +474,11 @@ define([
                 step0ErrorCount++;
             }
 
-            var inputtedDateString = $("#automation_run_date").val();
-            var dateStringAsArray = inputtedDateString.split("");
-
-            // is char 4 a - and char 7 a - and is char 9 true or false
-            if ( dateStringAsArray[4] != "-" || dateStringAsArray[7] != "-" || !dateStringAsArray[9] ) {
+            if ( !validateTheDateFormat($("#automation_run_date").val()) ) {
+                
                 step0ErrorCount++;
             }
+
 
             if ( step0ErrorCount == 0 ) {
 
@@ -495,7 +493,7 @@ define([
         } else if ( stepToValidate == 1 ) {
 
 
-            var step1Selectors = ["#message_target_send_date", "#message_title", "#message_content", "#cell_code", "#cell_name", "#campaign_name", "#campaign_id", "#campaign_code", "#message_url"];
+            var step1Selectors = ["#message_target_send_date", "#message_title", "#cell_code", "#cell_name", "#campaign_name", "#campaign_id", "#campaign_code", "#message_url"];
             var step1ErrorCount = 0;
 
             for ( var l = 0; l < step1Selectors.length; l++ ) {
@@ -508,12 +506,10 @@ define([
                 }
             }
 
-            var inputtedDateString = $("#message_target_send_date").val();
-            var dateStringAsArray = inputtedDateString.split("");
-
-            // is char 4 a - and char 7 a - and is char 9 true or false
-            if ( dateStringAsArray[4] != "-" || dateStringAsArray[7] != "-" || !dateStringAsArray[9] ) {
+            if ( !validateTheDateFormat($("#message_target_send_date").val()) ) {
+                
                 step1ErrorCount++;
+
             }
 
             if ( step1ErrorCount == 0 ) {
@@ -572,6 +568,11 @@ define([
 
             }
 
+            if ( !validateTheDateFormat($("#offer_start_date").val()) || !validateTheDateFormat($("#offer_end_date").val()) ) {
+                
+                step0ErrorCount++;
+            }
+
             if ( step2ErrorCount == 0 ) {
 
                 return true;
@@ -588,6 +589,35 @@ define([
 
         }
         
+    }
+
+    function isCharInteger(string) {
+        if (Number.isInteger(parseInt(string))) {
+            return true;
+        } else {
+             return false
+        }
+    }
+
+    function validateTheDateFormat(dateStringFromForm) {
+        var dateStringAsArray = dateStringFromForm.split("");
+
+        // is char 4 a - and char 7 a - and is char 9 true or false
+        if ( dateStringAsArray.length != 10 || dateStringAsArray[4] != "-" || dateStringAsArray[7] != "-" ) {
+            if (!isCharInteger(dateStringAsArray[0]) || 
+                !isCharInteger(dateStringAsArray[1]) || 
+                !isCharInteger(dateStringAsArray[2]) || 
+                !isCharInteger(dateStringAsArray[3]) || 
+                !isCharInteger(dateStringAsArray[5]) || 
+                !isCharInteger(dateStringAsArray[6]) || 
+                !isCharInteger(dateStringAsArray[8]) || 
+                !isCharInteger(dateStringAsArray[9]) 
+                ) {
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 /**
     function validateSingleField(element) {
@@ -1109,10 +1139,7 @@ define([
                 success: function(data) {
                     console.log('success');
                     console.log(data);
-                    $("#message_key_hidden").val(data);
-                    $("#main_setup_key").html(data);
-                    $("#control_action_save").html("Data has been sent");
-                    $("#control_action_save").prop('disabled', true);
+                    $("#control_action_save").html("Data has been updated");
                     $("#control_action_update").prop('disabled', false);
                     $("#control_action_seed").prop('disabled', false);
                     $("#control_action_create").prop('disabled', false);
