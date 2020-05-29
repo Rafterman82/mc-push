@@ -920,7 +920,7 @@ app.post('/dataextension/update/', async function (req, res){
 	console.dir(req.body);
 	try {
 		const returnedUpdatePayload = await sendBackUpdatedPayload(req.body)
-		res.send(JSON.stringify(returnedpdatePayload));
+		res.send(JSON.stringify(returnedUpdatePayload));
 	} catch(err) {
 		console.dir(err);
 	}
