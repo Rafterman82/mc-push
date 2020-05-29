@@ -616,21 +616,26 @@ define([
         console.log("The string passed for Date checking is" + dateStringFromForm);
         var dateStringAsArray = dateStringFromForm.split("");
 
+        console.log("Date array");
+        console.log(dateStringAsArray)
+        console.log("Date array length");
+        console.log(dateStringAsArray.length);
+
         // is char 4 a - and char 7 a - and is char 9 true or false
-        if ( dateStringAsArray.length != 10 || dateStringAsArray[4] != "-" || dateStringAsArray[7] != "-" ) {
-            if (!isCharInteger(dateStringAsArray[0]) || 
-                !isCharInteger(dateStringAsArray[1]) || 
-                !isCharInteger(dateStringAsArray[2]) || 
-                !isCharInteger(dateStringAsArray[3]) || 
-                !isCharInteger(dateStringAsArray[5]) || 
-                !isCharInteger(dateStringAsArray[6]) || 
-                !isCharInteger(dateStringAsArray[8]) || 
-                !isCharInteger(dateStringAsArray[9]) 
+        if ( dateStringAsArray.length == 10 || dateStringAsArray[4] == "-" || dateStringAsArray[7] == "-" ) {
+            if (isCharInteger(dateStringAsArray[0]) || 
+                isCharInteger(dateStringAsArray[1]) || 
+                isCharInteger(dateStringAsArray[2]) || 
+                isCharInteger(dateStringAsArray[3]) || 
+                isCharInteger(dateStringAsArray[5]) || 
+                isCharInteger(dateStringAsArray[6]) || 
+                isCharInteger(dateStringAsArray[8]) || 
+                isCharInteger(dateStringAsArray[9]) 
                 ) {
-                return false;
+                return true;
             }
         } else {
-            return true;
+            return false;
         }
     }
 /**
