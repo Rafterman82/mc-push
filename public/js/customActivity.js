@@ -472,7 +472,7 @@ define([
         } else if ( stepToValidate == 1 ) {
 
 
-            var step1Selectors = ["#textarea-id-01"];
+            var step1Selectors = ["#message_target_send_date", "#message_title", "#message_content", "#cell_code", "#cell_name", "#campaign_name", "#campaign_id", "#campaign_code", "#message_url"];
             var step1ErrorCount = 0;
 
             for ( var l = 0; l < step1Selectors.length; l++ ) {
@@ -481,8 +481,16 @@ define([
 
                 if ( !$(step1Selectors[l]).val() ) {
 
-                    //step1ErrorCount++;
+                    step1ErrorCount++;
                 }
+            }
+
+            var inputtedDateString = $("#message_target_send_date").val();
+            var dateStringAsArray = inputtedDateString.split("");
+
+            // is char 4 a - and char 7 a - and is char 9 true or false
+            if ( dateStringAsArray[4] != "-" || dateStringAsArray[7] != "-" || !dateStringAsArray[9] ) {
+                step1ErrorCount++;
             }
 
             if ( step1ErrorCount == 0 ) {
