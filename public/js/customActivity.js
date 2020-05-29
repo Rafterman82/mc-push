@@ -302,6 +302,11 @@ define([
         });
 
         // handler for Optima button
+        $("#control_action_update").click(function(){
+            updateExistingRow(buildActivityPayload());
+        });
+
+        // handler for Optima button
         $("#control_action_seed").click(function(){
             $("#seed_sent").val(true);
             createAutomationSeed(buildActivityPayload());
@@ -1081,6 +1086,47 @@ define([
             console.log("Error saving data");
             console.log(e);
         }
+
+    }
+
+    /*
+     * Function add data to data extension
+     */
+
+    function updateExistingRow(payloadToSave) {
+
+        if ( debug ) {
+            console.log("Data Object to be saved is: ");
+            console.log(payloadToSave);
+        }
+/**
+        try {
+            $.ajax({ 
+                url: '/dataextension/update',
+                type: 'POST',
+                data: JSON.stringify(payloadToSave),
+                contentType: 'application/json',                     
+                success: function(data) {
+                    console.log('success');
+                    console.log(data);
+                    $("#message_key_hidden").val(data);
+                    $("#main_setup_key").html(data);
+                    $("#control_action_save").html("Data has been sent");
+                    $("#control_action_save").prop('disabled', true);
+                    $("#control_action_update").prop('disabled', false);
+                    $("#control_action_seed").prop('disabled', false);
+                    $("#control_action_create").prop('disabled', false);
+                }
+                , error: function(jqXHR, textStatus, err){
+                    if ( debug ) {
+                        console.log(err);
+                    }
+                }
+            }); 
+        } catch(e) {
+            console.log("Error saving data");
+            console.log(e);
+        }**/
 
     }
 
