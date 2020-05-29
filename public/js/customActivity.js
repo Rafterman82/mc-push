@@ -108,6 +108,7 @@ define([
                 } else if ( argumentsSummaryPayload.buildPayload[r].key == "message_key_hidden" && argumentsSummaryPayload.buildPayload[r].value ) {
                     argKey = argumentsSummaryPayload.buildPayload[r].value;
                     $("#message_key_hidden").val(argKey);
+                    $("#main_setup_key").html(argKey);
                     $("#control_action_save").html("Data has been sent");
                     $("#control_action_save").prop('disabled', true);                    
                 } else if ( argumentsSummaryPayload.buildPayload[r].key == "seed_sent" && argumentsSummaryPayload.buildPayload[r].value ) {
