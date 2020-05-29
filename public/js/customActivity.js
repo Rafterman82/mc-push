@@ -110,7 +110,9 @@ define([
                     $("#message_key_hidden").val(argKey);
                     $("#main_setup_key").html(argKey);
                     $("#control_action_save").html("Data has been sent");
-                    $("#control_action_save").prop('disabled', true);                    
+                    $("#control_action_save").prop('disabled', true);
+                    $("#control_action_seed").prop('disabled', false);
+                    $("#control_action_create").prop('disabled', false);                 
                 } else if ( argumentsSummaryPayload.buildPayload[r].key == "seed_sent") {
                     console.log("seed sent value is");
                     console.log(argumentsSummaryPayload.buildPayload[r].value);
@@ -1065,6 +1067,7 @@ define([
                     $("#main_setup_key").html(data);
                     $("#control_action_save").html("Data has been sent");
                     $("#control_action_save").prop('disabled', true);
+                    $("#control_action_update").prop('disabled', false);
                     $("#control_action_seed").prop('disabled', false);
                     $("#control_action_create").prop('disabled', false);
                 }
@@ -1099,7 +1102,6 @@ define([
                     console.log(data);
                     $("#control_action_seed").html("Automation Created");
                     //$("#control_action_seed").prop('disabled', true);
-                    $("#seed_sent").val(true);
                 }
                 , error: function(jqXHR, textStatus, err){
                     if ( debug ) {
