@@ -524,7 +524,7 @@ define([
             var step2Selectors = ["#offer_short_content", "#offer_start_date", "#offer_end_date", "#offer_type", "#offer_image_url"];
             var step2ErrorCount = 0;
 
-            var step2CommSelectors = ["#cell_code", "#cell_name", "#campaign_name", "#campaign_id", "#campaign_code"]
+            var step2CommSelectors = ["#offer_cell_code", "#offer_cell_name", "#offer_campaign_name", "#offer_campaign_id", "#offer_campaign_code"]
 
             for ( var m = 0; m < step2Selectors.length; m++ ) {
 
@@ -543,14 +543,14 @@ define([
             console.log("Channel value is");
             console.log(selectedChannel);
 
-            if ( selectedChannel == '3') {
+            if ( selectedChannel == 3 || selectedChannel == '3') {
 
                 for ( var b = 0; b < step2CommSelectors.length; b++ ) {
                     console.log("The selector is " + step2Selectors[m]);
 
                     if ( !$(step2CommSelectors[b]).val() ) {
 
-                        //step2ErrorCount++;
+                        step2ErrorCount++;
                     }
                 }
 
@@ -559,7 +559,7 @@ define([
                 // check promotion isn't no-code
                 if ( $("#offer_promotion").val() == 'no-code') {
 
-                    //step2ErrorCount++;
+                    step2ErrorCount++;
 
                 }
 
