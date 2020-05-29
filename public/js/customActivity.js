@@ -29,6 +29,7 @@ define([
     var summaryPayload;
     var today = new Date();
     var currentTime = today.toGMTString();
+    var todayDate = new Date().toISOString().slice(0,10);
 
     if ( debug ) {
         console.log("Current Step is: " + currentStep);
@@ -296,6 +297,12 @@ define([
 
         $("#current_time").html(currentTime);
 
+        // set date inputs to todays date
+        $("#automation_run_date").val(todayDate);
+        $("#message_target_send_date").val(todayDate);
+        $("#offer_start_date").val(todayDate);
+        $("#offer_end_date").val(todayDate);
+
     }
 
     function updateApiStatus(endpointSelector, endpointStatus) {
@@ -428,7 +435,7 @@ define([
 
         } else if ( stepToValidate == 0 ) {
 
-            var step0Selectors = ["#update_contacts"];
+            var step0Selectors = ["#update_contacts", "#automation_run_date", "#widget_name"];
             var step0ErrorCount = 0;
 
             for ( var n = 0; n < step0Selectors.length; n++ ) {
@@ -437,8 +444,19 @@ define([
 
                 if ( !$(step0Selectors[n]).val() ) {
 
-                    //step0ErrorCount++;
+                    step0ErrorCount++;
                 }
+            }
+            if ( $("#update_contacts").val() == "no-code") {
+                step0ErrorCount++;
+            }
+
+            var inputtedDateString = $("#automation_run_date").val();
+            var dateStringAsArray = inputtedDateString.split("");
+
+            // is char 4 a - and char 7 a - and is char 9 true or false
+            if ( dateStringAsArray[4] != "-" || dateStringAsArray[7] != "-" || !dateStringAsArray[9] ) {
+                step0ErrorCount++;
             }
 
             if ( step0ErrorCount == 0 ) {
@@ -453,7 +471,6 @@ define([
 
         } else if ( stepToValidate == 1 ) {
 
-            var onelineCodeType = $(".online_promotion_type:checked").val();
 
             var step1Selectors = ["#textarea-id-01"];
             var step1ErrorCount = 0;
