@@ -535,6 +535,15 @@ define([
                     }
                 }
 
+            } else {
+
+                // check promotion isn't no-code
+                if ( $("#offer_promotion").val() == 'no-code') {
+
+                    step2ErrorCount++;
+                    
+                }
+
             }
 
             if ( step2ErrorCount == 0 ) {
