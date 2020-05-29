@@ -832,7 +832,7 @@ async function sendBackUpdatedPayload(payload) {
 		}
 	}
 	try {
-		const fullAssociationPayload = await buildAndUpdate(payload);
+		await buildAndUpdate(payload, messageKeyToUpdate);
 		return messageKeyToUpdate;
 	} catch(err) {
 		console.dir(err);
