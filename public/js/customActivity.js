@@ -532,7 +532,7 @@ define([
 
                 if ( !$(step2Selectors[m]).val() ) {
 
-                    step2ErrorCount++;
+                    //step2ErrorCount++;
                 }
             }
 
@@ -547,7 +547,7 @@ define([
 
                     if ( !$(step2CommSelectors[b]).val() ) {
 
-                        step2ErrorCount++;
+                        //step2ErrorCount++;
                     }
                 }
 
@@ -556,7 +556,7 @@ define([
                 // check promotion isn't no-code
                 if ( $("#offer_promotion").val() == 'no-code') {
 
-                    step2ErrorCount++;
+                    //step2ErrorCount++;
 
                 }
 
