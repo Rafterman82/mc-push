@@ -474,6 +474,9 @@ define([
                 step0ErrorCount++;
             }
 
+            console.log("The automation date string is:");
+            console.log($("#automation_run_date").val());
+
             if ( !validateTheDateFormat($("#automation_run_date").val()) ) {
                 
                 step0ErrorCount++;
@@ -505,6 +508,9 @@ define([
                     step1ErrorCount++;
                 }
             }
+
+            console.log("The message send date string is:");
+            console.log($("#message_target_send_date").val());
 
             if ( !validateTheDateFormat($("#message_target_send_date").val()) ) {
                 
@@ -568,9 +574,14 @@ define([
 
             }
 
+            console.log("The offer start date string is:");
+            console.log($("#offer_start_date").val());
+            console.log("The offer end date string is:");
+            console.log($("#offer_end_date").val());
+
             if ( !validateTheDateFormat($("#offer_start_date").val()) || !validateTheDateFormat($("#offer_end_date").val()) ) {
                 
-                step0ErrorCount++;
+                step2ErrorCount++;
             }
 
             if ( step2ErrorCount == 0 ) {
@@ -592,6 +603,8 @@ define([
     }
 
     function isCharInteger(string) {
+
+        console.log("The string passed for INT checking is" + string);
         if (Number.isInteger(parseInt(string))) {
             return true;
         } else {
@@ -600,6 +613,7 @@ define([
     }
 
     function validateTheDateFormat(dateStringFromForm) {
+        console.log("The string passed for Date checking is" + dateStringFromForm);
         var dateStringAsArray = dateStringFromForm.split("");
 
         // is char 4 a - and char 7 a - and is char 9 true or false
