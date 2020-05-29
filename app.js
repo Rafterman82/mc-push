@@ -322,9 +322,12 @@ async function addQueryActivity(payload, seed) {
 
 		// everyone gets contacted in some way so send one of the above queries to marketing cloud
 		const communicationQueryId = await sendQuery(marketingCloud.communicationHistoryID, marketingCloud.communicationHistoryKey, communicationQuery, marketingCloud.communicationTableName, "IF028 - Communication History - " + dateString + " - " + payloadAttributes.query_name, "Communication Cell Assignment in IF028 for " + payloadAttributes.query_name);
-		
-		await logQuery(communicationQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
-		returnIds["communication_query_id"] = communicationQueryId;
+		if ( seed ) {
+			await runQuery(communicationQueryId)
+		} else {		
+			await logQuery(communicationQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
+			returnIds["communication_query_id"] = communicationQueryId;
+		}
 
 		// now we handle whether this is legit offer or a informational offer
 		if ( payloadAttributes.push_type == "offer" ) {
@@ -380,9 +383,15 @@ async function addQueryActivity(payload, seed) {
 					console.dir(memberOfferQuery);
 				}
 				// send the assignment query
+
 				const assignmentQueryId = await sendQuery(marketingCloud.assignmentID, marketingCloud.assignmentKey, assignmentQuery, marketingCloud.assignmentTableName, "IF024 Assignment - " + dateString + " - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
-				await logQuery(assignmentQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
-				returnIds["assignment_query_id"] = assignmentQueryId;
+				if ( seed ) {
+					await runQuery(assignmentQueryId)
+				} else {
+					await logQuery(assignmentQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
+					returnIds["assignment_query_id"] = assignmentQueryId;
+				}				
+
 
 			} else {
 
@@ -394,8 +403,13 @@ async function addQueryActivity(payload, seed) {
 
 			// always send the member offer query
 			const memberOfferQueryId = await sendQuery(marketingCloud.offerID, marketingCloud.offerKey, memberOfferQuery, marketingCloud.offerTableName, "IF008 Offer - " + dateString + " - " + payloadAttributes.query_name, "Member Offer Assignment in IF008 for " + payloadAttributes.query_name);
-			await logQuery(memberOfferQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
-			returnIds["member_offer_query_id"] = memberOfferQueryId;
+			if ( seed ) {
+				await runQuery(memberOfferQueryId)
+			} else {
+				await logQuery(memberOfferQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
+				returnIds["member_offer_query_id"] = memberOfferQueryId;				
+			}
+
 
 		
 		} else if ( payloadAttributes.push_type == "message" ) {
@@ -404,11 +418,13 @@ async function addQueryActivity(payload, seed) {
 			messageQuery = "SELECT 'Matalan' AS SCHEME_ID, (cast(DATEDIFF(SS,'2020-01-01',getdate()) as bigint) * 100000) + row_number() over (order by (select null)) AS MOBILE_MESSAGE_ID, " + appCardNumber + " AS LOYALTY_CARD_NUMBER, MPT.message_content AS MESSAGE_CONTENT, CONCAT(MPT.message_target_send_date, ' ', MPT.message_target_send_time) AS TARGET_SEND_DATE_TIME, MPT.message_status AS STATUS, MPT.message_short_content AS SHORT_MESSAGE_CONTENT FROM [" + payloadAttributes.update_contact + "] as UpdateContactDE INNER JOIN [" + sourceDataModel + "] AS PCD ON PCD.PARTY_ID = UpdateContactDE.PARTY_ID LEFT JOIN [" + marketingCloud.mobilePushMainTable + "] as MPT ON MPT.push_key = " + payloadAttributes.key + "";
 			console.dir(messageQuery);
 			const messageQueryId = await sendQuery(marketingCloud.messageID, marketingCloud.messageKey, messageQuery, marketingCloud.messageTableName, "IF008 Message - " + dateString + " - " + payloadAttributes.query_name, "Message Assignment in IF008 for " + payloadAttributes.query_name);
-			await logQuery(messageQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
-			returnIds["member_message_query_id"] = messageQueryId;
-
+			if ( seed ) {
+				await runQuery(messageQueryId)
+			} else {			
+				await logQuery(messageQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
+				returnIds["member_message_query_id"] = messageQueryId;
+			}
 		}
-
 		return returnIds;
 
 	} catch(e) {

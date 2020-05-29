@@ -1098,7 +1098,7 @@ define([
                     console.log('success');
                     console.log(data);
                     $("#control_action_seed").html("Automation Created");
-                    $("#control_action_seed").prop('disabled', true);
+                    //$("#control_action_seed").prop('disabled', true);
                     $("#seed_sent").val(true);
                 }
                 , error: function(jqXHR, textStatus, err){
