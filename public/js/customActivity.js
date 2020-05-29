@@ -297,11 +297,13 @@ define([
 
         // handler for Optima button
         $("#control_action_seed").click(function(){
+            $("#seed_sent").val(true);
             createAutomationSeed(buildActivityPayload());
         });
 
         // handler for Optima button
         $("#control_action_create").click(function(){
+            $("#automation_sent").val(true);
             createAutomation(buildActivityPayload());
         });
 
