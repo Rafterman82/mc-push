@@ -789,6 +789,12 @@ function buildPushPayload(payload, commCellKey) {
 		mobilePushData["communication_control_key"] = parseInt(commCellKey) + 1;		
 	}
 
+	if ( mobilePushData.push_type == 'message') {
+		mobilePushData.message_status = 'A';
+	} else {
+		mobilePushData.offer_status = 'A';
+	}
+
 	console.dir("building push payload")
 	console.dir(mobilePushData);
 
@@ -808,6 +814,12 @@ function updatePushPayload(payload) {
 	console.dir(currentDateTimeStamp);
 
 	mobilePushData.date_added = currentDateTimeStamp;
+	if ( mobilePushData.push_type == 'message') {
+		mobilePushData.message_status = 'A';
+	} else {
+		mobilePushData.offer_status = 'C';
+	}
+	
 
 	delete mobilePushData.message_key_hidden;
 
