@@ -505,8 +505,10 @@ define([
 
         } else if ( stepToValidate == 2 ) {
 
-            var step2Selectors = ["#instore_code_1"];
+            var step2Selectors = ["#offer_short_content", "#offer_start_date", "#offer_end_date", "#offer_type", "#offer_image_url"];
             var step2ErrorCount = 0;
+
+            var step2CommSelectors = ["#cell_code", "#cell_name", "#campaign_name", "#campaign_id", "#campaign_code"]
 
             for ( var m = 0; m < step2Selectors.length; m++ ) {
 
@@ -514,8 +516,25 @@ define([
 
                 if ( !$(step2Selectors[m]).val() ) {
 
-                    //step2ErrorCount++;
+                    step2ErrorCount++;
                 }
+            }
+
+
+
+            var selectedChannel = $("#offer_channel").val();
+
+            if ( selectedChannel == '3') {
+
+                for ( var b = 0; b < step2CommSelectors.length; b++ ) {
+                    console.log("The selector is " + step2Selectors[m]);
+
+                    if ( !$(step2CommSelectors[b]).val() ) {
+
+                        step2ErrorCount++;
+                    }
+                }
+
             }
 
             if ( step2ErrorCount == 0 ) {
