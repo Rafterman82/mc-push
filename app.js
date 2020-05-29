@@ -379,7 +379,7 @@ async function addQueryActivity(payload, seed) {
 					console.dir(memberOfferQuery);
 				}
 				// send the assignment query
-				assignmentQueryId = await sendQuery(marketingCloud.assignmentID, marketingCloud.assignmentKey, assignmentQuery, marketingCloud.assignmentTableName, "IF024 Assignment - " + dateString + " - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
+				const assignmentQueryId = await sendQuery(marketingCloud.assignmentID, marketingCloud.assignmentKey, assignmentQuery, marketingCloud.assignmentTableName, "IF024 Assignment - " + dateString + " - " + payloadAttributes.query_name, "Assignment in PROMOTION_ASSIGNMENT in IF024 for " + payloadAttributes.query_name);
 				await logQuery(assignmentQueryId, payloadAttributes.query_reoccuring, payloadAttributes.query_date);
 				returnIds["assignment_query_id"] = assignmentQueryId;
 
