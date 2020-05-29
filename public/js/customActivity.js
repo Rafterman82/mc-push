@@ -111,11 +111,11 @@ define([
                     $("#main_setup_key").html(argKey);
                     $("#control_action_save").html("Data has been sent");
                     $("#control_action_save").prop('disabled', true);                    
-                } else if ( argumentsSummaryPayload.buildPayload[r].key == "seed_sent" && argumentsSummaryPayload.buildPayload[r].value ) {
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "seed_sent" && argumentsSummaryPayload.buildPayload[r].value == 'true' ) {
                     $("#control_action_seed").html("Automation Created");
                     $("#control_action_seed").prop('disabled', true); 
 
-                } else if ( argumentsSummaryPayload.buildPayload[r].key == "automation_sent" && argumentsSummaryPayload.buildPayload[r].value ) {
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "automation_sent" && argumentsSummaryPayload.buildPayload[r].value == 'true' ) {
                     $("#control_action_create").html("Automation Created");
                     $("#control_action_create").prop('disabled', true); 
 
