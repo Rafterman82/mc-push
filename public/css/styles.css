@@ -47,3 +47,6 @@ body {
 #step3alert {
 	margin-bottom: 10px;
 }
+#offer_cell_box {
+	display:none;
+}

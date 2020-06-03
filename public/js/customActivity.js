@@ -27,6 +27,9 @@ define([
     var stepValidation = false;
     var payloadToSave;
     var summaryPayload;
+    var today = new Date();
+    var currentTime = today.toGMTString();
+    var todayDate = new Date().toISOString().slice(0,10);
 
     if ( debug ) {
         console.log("Current Step is: " + currentStep);
@@ -100,13 +103,28 @@ define([
             var argKey;
 
             for ( r = 0; r < argumentsSummaryPayload.buildPayload.length; r++ ) {
-                if ( argumentsSummaryPayload.buildPayload[r].key == "pushType" ) {
+                if ( argumentsSummaryPayload.buildPayload[r].key == "push_type" ) {
                     argPromotionType = argumentsSummaryPayload.buildPayload[r].value; 
-                } else if ( argumentsSummaryPayload.buildPayload[r].key == "promotion_key_hidden" ) {
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "message_key_hidden" && argumentsSummaryPayload.buildPayload[r].value ) {
                     argKey = argumentsSummaryPayload.buildPayload[r].value;
-                    $("#promotion_key_hidden").val(argKey);
-                    $("#control_action_optima").html("Data has been sent");
-                    $("#control_action_optima").prop('disabled', true);                    
+                    $("#message_key_hidden").val(argKey);
+                    $("#main_setup_key").html(argKey);
+                    $("#control_action_save").html("Data has been sent");
+                    $("#control_action_save").prop('disabled', true);
+                    $("#control_action_seed").prop('disabled', false);
+                    $("#control_action_create").prop('disabled', false);                 
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "seed_sent") {
+                    console.log("seed sent value is");
+                    console.log(argumentsSummaryPayload.buildPayload[r].value);
+                    //$("#control_action_seed").html("Automation Created");
+                    //$("#control_action_seed").prop('disabled', true); 
+
+                } else if ( argumentsSummaryPayload.buildPayload[r].key == "automation_sent") {
+                    console.log("automation sent value is");
+                    console.log(argumentsSummaryPayload.buildPayload[r].value);
+                    //$("#control_action_create").html("Automation Created");
+                    //$("#control_action_create").prop('disabled', true); 
+
                 }
             }
 
@@ -118,6 +136,7 @@ define([
 
             // trigger steps
             triggerSteps(argumentsSummaryPayload.buildPayload, argPromotionType);
+
 
         }      
     }
@@ -178,13 +197,18 @@ define([
         // render relevant steps based on input
         $('.promotion_type').click(function() {
 
-            var pushType = $("input[name='pushType']:checked").val();
+            var pushType = $("input[name='push_type']:checked").val();
 
             if ( debug ) {
                 console.log(pushType);
             }
 
             if ( pushType === 'message' ) {
+
+                // hide control group field
+                $("#control_group_box").show();
+
+                $("#promotion_alert").hide();
 
                 if ( debug ) {
                     console.log("trigger step 1");   
@@ -204,6 +228,10 @@ define([
                 connection.trigger('updateSteps', steps);
 
             } else if ( pushType === 'offer' ) {
+
+                // hide control group field
+                //$("#control_group_box").hide();
+                $("#promotion_alert").show();
 
                 if ( debug ) {
                     console.log("trigger step 2");   
@@ -225,6 +253,39 @@ define([
 
         });
 
+        // render relevant steps based on input
+        $('#offer_channel').change(function() {
+
+            if ( $("#offer_channel").val() == '3' || $("#offer_channel").val() == 3) {
+                // informational, show cell code and de-couple from promotion widget
+                $("#offer_cell_box").show();
+
+                // hide promotion dropdown
+                $("#promotion_element").hide();
+
+            } else {
+
+                $("#offer_cell_box").hide();
+                // show offer promotion
+                $("#promotion_element").show();
+
+            }
+
+        });
+
+        $('#offer_promotion').change(function() {
+            // get data attributes from dd and prepop hidden fields
+            $("#offer_promotion_type").val($("option:selected", this).attr("data-attribute-promotion-type"));
+            $("#offer_online_promotion_type").val($("option:selected", this).attr("data-attribute-online-promotion-type"));
+            $("#offer_online_code_1").val($("option:selected", this).attr("data-attribute-online-code"));
+            $("#offer_instore_code_1").val($("option:selected", this).attr("data-attribute-instore-code"));
+            $("#offer_unique_code_1").val($("option:selected", this).attr("data-attribute-voucher-pot"));
+            $("#offer_mc_id_1").val($("option:selected", this).attr("data-attribute-mc1"));
+            $("#offer_mc_id_6").val($("option:selected", this).attr("data-attribute-mc6"));
+            $("#communication_key").val($("option:selected", this).attr("data-attribute-cell"));
+            $("#offer_redemptions").val($("option:selected", this).attr("data-attribute-redemptions"));
+        });
+
         // hide the tool tips on page load
         $('.slds-popover_tooltip').hide();
 
@@ -241,14 +302,29 @@ define([
         });
 
         // handler for Optima button
+        $("#control_action_update").click(function(){
+            updateExistingRow(buildActivityPayload());
+        });
+
+        // handler for Optima button
         $("#control_action_seed").click(function(){
+            $("#seed_sent").val(true);
             createAutomationSeed(buildActivityPayload());
         });
 
         // handler for Optima button
         $("#control_action_create").click(function(){
+            $("#automation_sent").val(true);
             createAutomation(buildActivityPayload());
         });
+
+        $("#current_time").html(currentTime);
+
+        // set date inputs to todays date
+        $("#automation_run_date").val(todayDate);
+        $("#message_target_send_date").val(todayDate);
+        $("#offer_start_date").val(todayDate);
+        $("#offer_end_date").val(todayDate);
 
     }
 
@@ -302,7 +378,7 @@ define([
                     }
                     
                 } else if ( argumentsSummaryPayload[q].type == "radio") {
-                    if ( argumentsSummaryPayload[q].key == "pushType") {
+                    if ( argumentsSummaryPayload[q].key == "push_type") {
                         if ( argumentsSummaryPayload[q].value == "message") {
                             $("#radio-1").prop('checked', true);
                             $("#radio-1").click();
@@ -382,7 +458,7 @@ define([
 
         } else if ( stepToValidate == 0 ) {
 
-            var step0Selectors = ["#update_contacts"];
+            var step0Selectors = ["#update_contacts", "#automation_run_date", "#widget_name"];
             var step0ErrorCount = 0;
 
             for ( var n = 0; n < step0Selectors.length; n++ ) {
@@ -391,9 +467,21 @@ define([
 
                 if ( !$(step0Selectors[n]).val() ) {
 
-                    //step0ErrorCount++;
+                    step0ErrorCount++;
                 }
             }
+            if ( $("#update_contacts").val() == "no-code") {
+                step0ErrorCount++;
+            }
+
+            console.log("The automation date string is:");
+            console.log($("#automation_run_date").val());
+
+            if ( !validateTheDateFormat($("#automation_run_date").val()) ) {
+                
+                step0ErrorCount++;
+            }
+
 
             if ( step0ErrorCount == 0 ) {
 
@@ -407,9 +495,8 @@ define([
 
         } else if ( stepToValidate == 1 ) {
 
-            var onelineCodeType = $(".online_promotion_type:checked").val();
 
-            var step1Selectors = ["#textarea-id-01"];
+            var step1Selectors = ["#message_target_send_date", "#message_title", "#cell_code", "#cell_name", "#campaign_name", "#campaign_id", "#campaign_code", "#message_url"];
             var step1ErrorCount = 0;
 
             for ( var l = 0; l < step1Selectors.length; l++ ) {
@@ -418,8 +505,17 @@ define([
 
                 if ( !$(step1Selectors[l]).val() ) {
 
-                    //step1ErrorCount++;
+                    step1ErrorCount++;
                 }
+            }
+
+            console.log("The message send date string is:");
+            console.log($("#message_target_send_date").val());
+
+            if ( !validateTheDateFormat($("#message_target_send_date").val()) ) {
+                
+                step1ErrorCount++;
+
             }
 
             if ( step1ErrorCount == 0 ) {
@@ -434,8 +530,10 @@ define([
 
         } else if ( stepToValidate == 2 ) {
 
-            var step2Selectors = ["#instore_code_1"];
+            var step2Selectors = ["#offer_short_content", "#offer_start_date", "#offer_end_date", "#offer_type", "#offer_image_url"];
             var step2ErrorCount = 0;
+
+            var step2CommSelectors = ["#offer_cell_code", "#offer_cell_name", "#offer_campaign_name", "#offer_campaign_id", "#offer_campaign_code"]
 
             for ( var m = 0; m < step2Selectors.length; m++ ) {
 
@@ -443,8 +541,47 @@ define([
 
                 if ( !$(step2Selectors[m]).val() ) {
 
-                    //step2ErrorCount++;
+                    step2ErrorCount++;
                 }
+            }
+
+
+
+            var selectedChannel = $("#offer_channel").val();
+
+            console.log("Channel value is");
+            console.log(selectedChannel);
+
+            if ( selectedChannel == 3 || selectedChannel == '3') {
+
+                for ( var b = 0; b < step2CommSelectors.length; b++ ) {
+                    console.log("The selector is " + step2Selectors[m]);
+
+                    if ( !$(step2CommSelectors[b]).val() ) {
+
+                        step2ErrorCount++;
+                    }
+                }
+
+            } else {
+
+                // check promotion isn't no-code
+                if ( $("#offer_promotion").val() == 'no-code') {
+
+                    step2ErrorCount++;
+
+                }
+
+            }
+
+            console.log("The offer start date string is:");
+            console.log($("#offer_start_date").val());
+            console.log("The offer end date string is:");
+            console.log($("#offer_end_date").val());
+
+            if ( !validateTheDateFormat($("#offer_start_date").val()) || !validateTheDateFormat($("#offer_end_date").val()) ) {
+                
+                step2ErrorCount++;
             }
 
             if ( step2ErrorCount == 0 ) {
@@ -464,68 +601,43 @@ define([
         }
         
     }
-/**
-    function validateSingleField(element) {
 
-        // your code
-        console.log($(element).val());
-        console.log($(element).attr("data-attribute-length"));
-        console.log($(element).attr("data-attribute-type"));
+    function isCharInteger(string) {
 
-        var elementValue = $(element).val();
-        var elementId = $(element).attr('id');
-        var elementLength = $(element).attr("data-attribute-length");
-        var elementType = $(element).attr("data-attribute-type");
-
-        if ( elementId == "promotion_id_1" ) {
-
-            $("#promotion_group_id_online").val(elementValue);
-
-        } else if ( elementId == "promotion_id_6" ) {
-
-            $("#promotion_group_id_instore").val(elementValue);
-
+        console.log("The string passed for INT checking is" + string);
+        if (Number.isInteger(parseInt(string))) {
+            return true;
+        } else {
+             return false
         }
+    }
 
-        if ( elementType == 'int' ) {
+    function validateTheDateFormat(dateStringFromForm) {
+        console.log("The string passed for Date checking is" + dateStringFromForm);
+        var dateStringAsArray = dateStringFromForm.split("");
 
-            // value must be number
-            if ( !isWholeNumber(elementValue) && elementValue <= 0 && elementValue.length <= elementLength) {
+        console.log("Date array");
+        console.log(dateStringAsArray)
+        console.log("Date array length");
+        console.log(dateStringAsArray.length);
 
-                $(element).parents().eq(1).addClass("slds-has-error");
-                $("#form-error__" + elementId).html("This value must be a number. Less than 30 digits and cannot be empty");
-                $("#form-error__" + elementId).show();
-
-            } else {
-
-                console.log("hiding error");
-                $("#form-error__" + elementId).hide();
-                $(element).parents().eq(1).removeClass("slds-has-error");
-
+        // is char 4 a - and char 7 a - and is char 9 true or false
+        if ( dateStringAsArray.length == 10 && dateStringAsArray[4] == "-" && dateStringAsArray[7] == "-" ) {
+            if (isCharInteger(dateStringAsArray[0]) && 
+                isCharInteger(dateStringAsArray[1]) && 
+                isCharInteger(dateStringAsArray[2]) && 
+                isCharInteger(dateStringAsArray[3]) && 
+                isCharInteger(dateStringAsArray[5]) && 
+                isCharInteger(dateStringAsArray[6]) && 
+                isCharInteger(dateStringAsArray[8]) && 
+                isCharInteger(dateStringAsArray[9]) 
+                ) {
+                return true;
             }
-
-        } else if ( elementType == 'varchar' ) {
-
-            // value must be varchar
-            if ( elementValue.length >= elementLength || isEmpty(elementValue) ) {
-
-                console.log("value is empty or greater than required length")
-                // value must be less than length
-                $(element).parents().eq(1).addClass("slds-has-error");
-                $("#form-error__" + elementId).html("Value must be less than " + elementLength +" characters and cannot be empty");
-                $("#form-error__" + elementId).show();
-            
-            } else {
-
-                console.log("hiding error");
-                $("#form-error__" + elementId).hide();
-                $(element).parents().eq(1).removeClass("slds-has-error");
-
-            }
-
+        } else {
+            return false;
         }
-
-    } **/
+    }
 
 
     function isEmpty (value) {
@@ -594,13 +706,16 @@ define([
                 }
 
                 var i;
-                for (i = 0; i < result.items.length; ++i) {
-                    if ( debug ) {
-                        console.log(result.items[i].keys);
-                    }
-                    // do something with `substr[i]
-                    $(".offer_promotion").append("<option value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
+                if ( result.items ) {
+                    for (i = 0; i < result.items.length; ++i) {
+                        if ( debug ) {
+                            console.log(result.items[i].keys);
+                        }
+                        // do something with `substr[i]
+                        $("#offer_promotion").append("<option data-attribute-redemptions=" + result.items[i].values.instore_code_1_redemptions + " data-attribute-control=" + result.items[i].values.communication_cell_id_control + " data-attribute-cell=" + result.items[i].values.communication_cell_id + " data-attribute-mc6=" + result.items[i].values.mc_id_6 + " data-attribute-mc1=" + result.items[i].values.mc_id_1 + " data-attribute-instore-code=" + result.items[i].values.instore_code_1 + " data-attribute-online-code=" + result.items[i].values.global_code_1 + " data-attribute-online-promotion-type=" + result.items[i].values.onlinepromotiontype + " data-attribute-promotion-type=" + result.items[i].values.promotiontype + " data-attribute-voucher-pot=" + result.items[i].values.unique_code_1 + " value=" + result.items[i].keys.promotion_key + ">" + result.items[i].values.campaign_name + "</option>");
+                    }                   
                 }
+
                 updateApiStatus("promotions-api", true);
             }
 
@@ -670,7 +785,7 @@ define([
 
     function onClickedNext () {
 
-        var pushType = $("#step0 .slds-radio input[name='pushType']:checked").val();
+        var pushType = $("#step0 .slds-radio input[name='push_type']:checked").val();
 
         if ( debug ) {
             console.log(pushType);
@@ -944,6 +1059,45 @@ define([
                     $("#main_setup_key").html(data);
                     $("#control_action_save").html("Data has been sent");
                     $("#control_action_save").prop('disabled', true);
+                    $("#control_action_update").prop('disabled', false);
+                    $("#control_action_seed").prop('disabled', false);
+                    $("#control_action_create").prop('disabled', false);
+                }
+                , error: function(jqXHR, textStatus, err){
+                    if ( debug ) {
+                        console.log(err);
+                    }
+                }
+            }); 
+        } catch(e) {
+            console.log("Error saving data");
+            console.log(e);
+        }
+
+    }
+
+    /*
+     * Function add data to data extension
+     */
+
+    function updateExistingRow(payloadToSave) {
+
+        if ( debug ) {
+            console.log("Data Object to be saved is: ");
+            console.log(payloadToSave);
+        }
+
+        try {
+            $.ajax({ 
+                url: '/dataextension/update',
+                type: 'POST',
+                data: JSON.stringify(payloadToSave),
+                contentType: 'application/json',                     
+                success: function(data) {
+                    console.log('success');
+                    console.log(data);
+                    $("#control_action_save").html("Data has been updated");
+                    $("#control_action_update").prop('disabled', false);
                     $("#control_action_seed").prop('disabled', false);
                     $("#control_action_create").prop('disabled', false);
                 }
@@ -976,10 +1130,8 @@ define([
                 success: function(data) {
                     console.log('success');
                     console.log(data);
-                    $("#seed_query_key_hidden").val(data);
-                    $("#main_setup_seed_query_id").html(data);
                     $("#control_action_seed").html("Automation Created");
-                    $("#control_action_seed").prop('disabled', true);
+                    //$("#control_action_seed").prop('disabled', true);
                 }
                 , error: function(jqXHR, textStatus, err){
                     if ( debug ) {
@@ -1170,7 +1322,7 @@ define([
 
                 if ( summaryPayload[z].step == 1 ) {
 
-                    if ( summaryPayload[z].key == "pushType" ) {
+                    if ( summaryPayload[z].key == "push_type" ) {
                         var summaryPromotionType = summaryPayload[z].value;
                         if ( summaryPromotionType == "message") {
                             $("#summary-offer-setup").append('<p>No offer setup.</p>');
